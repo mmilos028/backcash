@@ -1,0 +1,6 @@
+Backoffice uses Zend framework model classes to comunicate with
+Oracle database.
+In Model classes are stored procedure calls to oracle database.
+First method in class is __construct which is php constructor and it reads
+for configuration to create database connection through dbAdapter class.
+Every procedure returns ref cursors as results from database and they are converted to php arrays.

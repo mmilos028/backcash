@@ -1,0 +1,1 @@
+$(document).ready(function(){$("#REPORT_STARTDATE").attr("readonly","readonly");$("#REPORT_ENDDATE").attr("readonly","readonly")})

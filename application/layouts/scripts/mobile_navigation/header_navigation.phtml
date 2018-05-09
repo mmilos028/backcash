@@ -1,0 +1,113 @@
+<?php
+$translate = Zend_Registry::get('translate');
+$lang = Zend_Registry::get('lang');
+$username = $_SESSION['auth_space']['session']['username'];
+$subject_type = $_SESSION['auth_space']['session']['subject_super_type_name'];
+$rola = $_SESSION['auth_space']['session']['subject_type_name'];
+$config = Zend_Registry::get('config');
+$section_name = $config->getSectionName();
+//role constants
+require_once HELPERS_DIR . DS . 'ApplicationConstants.php';
+$shift_status = NO; //shift for ShiftCashierS has not started
+$shift_start_time = "";
+if($rola == ROLA_AD_SHIFT_CASHIER_S || $rola == ROLA_AD_SHIFT_CASHIER_W){
+	require_once MODELS_DIR . DS . 'CashiersCollectorsModel.php';
+	$session_id = $_SESSION['auth_space']['session']['session_out'];
+	$arrCheckShift = CashiersCollectorsModel::checkOpenShifts($session_id);
+	$shift_status = $arrCheckShift['shift_status'];
+	$shift_start_time = $arrCheckShift['shift_start_time'];
+}
+//check registred roles, if not registred show limited menu
+$limited_menu = true;
+if(in_array($rola, array(SUPER_ROLA_MASTER_CASINO, ROLA_AD_CASHIER, ROLA_AD_CASHIER_SUBLEVEL, ROLA_AD_CASHIER_PAYOUT, ROLA_AD_THAICASHIER, ROLA_AD_COLLECTOR,
+	ROLA_AFF_AFFILIATE, ROLA_AFF_LOCATION, ROLA_AFF_OPERATER, ROLA_ADMIN_CUSTOM, ROLA_ADMIN_CUSTOM_MINI, ROLA_AD_ADMINISTRATOR, ROLA_AD_SHIFT_CASHIER_S,
+	ROLA_AD_SHIFT_CASHIER_W, ROLA_Filijala_5_Serbia_Bgd, ROLA_AF_TEST_BRISI1, ROLA_AF_MASTER_AFFILIATE))){
+	$limited_menu = false;
+}
+?>
+<script type="text/javascript">
+function enterPanicStateMode(){
+    <?php
+        $rola = $_SESSION['auth_space']['session']['subject_type_name']; //rola
+        if($config->getSectionName() != "fungames.nu"){
+        if($_SESSION['auth_space']['session']['panic_status'] == OFF && ($rola == ROLA_AD_CASHIER || $rola == ROLA_AD_CASHIER_PAYOUT || $rola == ROLA_AD_SHIFT_CASHIER_S || $rola == ROLA_AD_SHIFT_CASHIER_W)){
+        ?>
+        $.ajax({
+            async: true,
+            type: "POST",
+            url: "<?php echo $this->url(array('controller'=>'panic', 'action'=>'panic')); ?>",
+            success: function (data) {
+                top.location.replace(data);
+                return true;
+            },
+            failure: function () {
+                top.location.replace("http://www.google.com");
+            }
+        });
+        return true;
+        <?php
+            }
+        }
+    ?>
+}
+function showPanicModalBoxDialog(){
+    //$("#panicModalBox").show();
+    enterPanicStateMode();
+}
+function closePanicModalBoxDialog(){
+    $("#panicModalBox").hide();
+}
+
+$(document).ready(function() {
+    $("#panicModalBox").hide();
+});
+
+</script>
+
+<header class="main-header">
+<nav class="navbar navbar-static-top">
+    <div class="container">
+				<?php
+				if($_SESSION['auth_space']['session']['panic_status'] == OFF && ($rola == ROLA_AD_CASHIER || $rola == ROLA_AD_CASHIER_PAYOUT || $rola == ROLA_AD_SHIFT_CASHIER_S || $rola == ROLA_AD_SHIFT_CASHIER_W)){
+				?>
+        <div class="pull-left">
+            <ul class="nav navbar-nav">
+                <li>
+                    <a href="javascript:void(0)" onClick="showPanicModalBoxDialog()" class="noblockui bg-red">
+                        <i class="fa fa-stop"></i>
+                        <span><?php echo $translate->_('Exit'); ?></span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+				<?php
+				}
+				?>
+        <div class="navbar-custom-menu">
+          <ul class="nav navbar-nav">
+              <li><a href="<?php echo $this->url(array('lang'=>$lang,'controller'=>'mobile-menu', 'action'=>'index'), null, true);?>"><i class="fa fa-bars"></i> <span><?php echo $translate->_('Main Menu'); ?></span></a></li>
+              <li><a href="<?php echo $this->url(array('lang'=>$lang,'controller'=>'auth', 'action'=>'logout'), null, true);?>"><i class="fa fa-sign-out"></i> <span><?php echo $translate->_('Logout'); ?></span></a></li>
+          </ul>
+        </div>
+  </div>
+</nav>
+</header>
+
+<div id="panicModalBox" class="modal modal-danger modalMessage" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">
+                    <?php echo $translate->_("Attention"); ?>
+                </h4>
+            </div>
+            <div class="modal-body">
+                <?php echo $translate->_("Are you sure?"); ?>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" data-dismiss="modal" onclick="enterPanicStateMode()"><?php echo $translate->_("Continue"); ?></button>
+                <button type="button" class="btn btn-outline" data-dismiss="modal" onclick="closePanicModalBoxDialog()"><?php echo $translate->_("Cancel"); ?></button>
+            </div>
+        </div>
+    </div>
+</div>

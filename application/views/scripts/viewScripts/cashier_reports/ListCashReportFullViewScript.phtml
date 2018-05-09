@@ -1,0 +1,197 @@
+<?php 
+$translate = Zend_Registry::get("translate"); 
+$months_in_past = $_SESSION['report_operation']['months_in_past'];
+?>
+<script type="text/javascript">
+$(document).ready(function() {
+	var now = new Date();
+    $.fn.datepicker.defaults.format = "dd-M-yyyy";
+    $.fn.datepicker.defaults.allowDeselection = false;
+
+	var currentTime = new Date();
+	var startDateFrom = new Date(currentTime.getFullYear(), currentTime.getMonth() - <?php echo $months_in_past; ?>, 1);
+	var startDateTo = new Date(currentTime.getFullYear(), currentTime.getMonth() +1, 0);
+
+	var startdateDate;
+	$("#REPORT_STARTDATE").datepicker({
+        dateFormat: 'dd-M-yyyy',
+        changeYear: true,
+        changeMonth: true,
+        showWeek: true,
+        enableOnReadonly: true,
+        keyboardNavigation: true,
+        showOnFocus: true,
+        todayHighlight: true,
+        forceParse: true,
+        autoclose: true,
+		startDate: startDateFrom, endDate: startDateTo, numberOfMonths: 1
+	});
+
+    var enddateDate;
+	$("#REPORT_ENDDATE").datepicker({
+		dateFormat: 'dd-M-yyyy',
+        changeYear: true,
+        changeMonth: true,
+        showWeek: true,
+        enableOnReadonly: true,
+        keyboardNavigation: true,
+        showOnFocus: true,
+        todayHighlight: true,
+        forceParse: true,
+        autoclose: true,
+		startDate: startDateFrom, numberOfMonths: 1
+	});
+	$("#REPORT_ENDDATE").change(function() {
+        var date1 = $("#REPORT_STARTDATE").datepicker("getDate");
+        var date2 = $("#REPORT_ENDDATE").datepicker("getDate");
+        if(date2 < date1)
+            $("#REPORT_ENDDATE").val($("#REPORT_STARTDATE").val());
+        });
+    $("#REPORT_STARTDATE").change(function(){
+    	var date1 = $("#REPORT_STARTDATE").datepicker("getDate");
+        var date2 = $("#REPORT_ENDDATE").datepicker("getDate");
+        if(date2 < date1)
+            $("#REPORT_STARTDATE").val($("#REPORT_ENDDATE").val());
+    });
+
+
+    // Save date picked
+    $("#REPORT_STARTDATE").on('show', function () {
+        startdateDate = $(this).val();
+    });
+    // Replace with previous date if no date is picked or if same date is picked to avoide toggle error
+    $("#REPORT_STARTDATE").on('hide', function () {
+        if ($(this).val() === '' || $(this).val() === null) {
+            $(this).val(startdateDate).datepicker('update');
+        }
+    });
+
+    // Save date picked
+    $("#REPORT_ENDDATE").on('show', function () {
+        enddateDate = $(this).val();
+    });
+    // Replace with previous date if no date is picked or if same date is picked to avoide toggle error
+    $("#REPORT_ENDDATE").on('hide', function () {
+        if ($(this).val() === '' || $(this).val() === null) {
+            $(this).val(enddateDate).datepicker('update');
+        }
+    });
+
+    $("#GENERATE_REPORT").attr("disabled", "disabled").addClass('disabled'); //set button disabled as default
+    if($("#AFFILIATES option:selected").text() == "<?php echo $translate->_('SelectAffiliate'); ?>") { //if affiliate not chossen
+        $("#GENERATE_REPORT").attr("disabled", "disabled").addClass('disabled'); //set button disabled
+    }else {
+        $("#GENERATE_REPORT").removeAttr('disabled').removeClass('disabled'); //set button not disabled
+    }
+    $("#AFFILIATES").change(function(){
+    	if($("#AFFILIATES option:selected").text() == "<?php echo $translate->_('SelectAffiliate'); ?>") {
+            $("#GENERATE_REPORT").attr("disabled", "disabled").addClass('disabled');
+        }
+        else {
+            $("#GENERATE_REPORT").removeAttr('disabled').removeClass('disabled');
+        }
+	});	
+    $("#LEVEL_DIRECTION").val(0);
+    if($("#AFFILIATES option:selected").text() == "up level") {
+        $("#LEVEL_DIRECTION").val(0);
+    }
+    else{
+        $("#LEVEL_DIRECTION").val(1);
+    }
+    $("#AFFILIATES").change(function(){
+        if($("#AFFILIATES option:selected").text() == "up level") {
+            $("#LEVEL_DIRECTION").val(0);
+        }
+        else {
+            $("#LEVEL_DIRECTION").val(1);
+        }
+	});	 
+    $('#form_cash_report').submit(function(){
+    	$('input[type=submit]', this).addClass('disabled');
+    });
+
+    $("#form_cash_report").find("select").change(function(evt) {
+        if ($(this).val() != "-10") {
+            $('#form_cash_report').submit();
+        }
+    });
+
+    $(".startdate").on('click',function(){
+          $('#REPORT_STARTDATE').focus();
+    });
+    $(".enddate").on('click',function(){
+          $('#REPORT_ENDDATE').focus();
+    });
+});
+</script>
+
+<form id="form_cash_report" class="form-inline" action="<?php echo $this->escape($this->element->getAction()); ?>"
+	method="<?php echo $this->escape($this->element->getMethod()); ?>">
+        <div class="invincible">
+        <?php
+            if(isset($this->element->AFFILIATE_NUMBER)){
+                echo $this->element->AFFILIATE_NUMBER;
+            }
+            if(isset($this->element->LEVEL_DIRECTION)){
+                echo $this->element->LEVEL_DIRECTION;
+            }
+        ?>
+        </div>
+
+        <div class="row" style="max-width: 400px;">
+            <?php
+            if(isset($this->element->AFFILIATES)){
+                echo $this->element->AFFILIATES;
+            }
+            ?>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-6" style="max-width: 230px;">
+                <?php if(isset($this->element->REPORT_STARTDATE)){ ?>
+                <div class="input-group date startdate">
+                    <?php echo $this->element->REPORT_STARTDATE; ?>
+                </div>
+                <?php } ?>
+            </div>
+            <div class="col-xs-6" style="max-width: 230px;">
+                <?php if(isset($this->element->REPORT_ENDDATE)){ ?>
+                <div class="input-group date enddate">
+                    <?php echo $this->element->REPORT_ENDDATE; ?>
+                </div>
+                <?php } ?>
+            </div>
+        </div>
+
+        <div class="row" style="max-width: 400px;">
+            <?php
+            if(isset($this->element->PAGE)){
+                echo $this->element->PAGE;
+            }
+            ?>
+            <?php echo $this->element->LIMIT; ?>
+        </div>
+
+        <div class="row" style="max-width: 400px;">
+            <?php
+            if(isset($this->element->CURRENCIES)){
+                echo $this->element->CURRENCIES;
+            }
+            ?>
+        </div>
+
+        <!--
+        <div class="row">
+            <div class="col-xs-12">
+                &nbsp;
+            </div>
+        </div>
+        -->
+
+
+        <div class="row" style="max-width: 400px;">
+            <?php echo $this->element->GENERATE_REPORT; ?>
+            <?php echo $this->element->MIN_REPORT; ?>
+            <?php echo $this->element->PREVIOUS_PAGE; ?>
+        </div>
+</form>

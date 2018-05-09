@@ -1,0 +1,22 @@
+application.ini file contains application centralized settings
+- in section [languages] is stored list of supported languages
+- in section db is stored that application uses oracle database and connects with username and password as in file
+- in section live, production and testing are different settings for configurations with live, live testing and testing / development configurations 
+dbname is connection string to connect to oracle database
+phpsettings in setting for php environment
+resources front controler is not to throw errors
+error path file is path for backoffice error log in server
+possible logins is for number of attempts to login before it requires to ask for security code to enter with login username and password
+sendErrorsOnMail, smtpServer, mailSendErrorTo, mailSendErrorFrom are settings to send mail with backoffice error log in mail address
+
+in folder translations are stored translations of backoffice words for most languages
+at_AT is austrian german language
+da_DK is danish lanugage
+de_DE is german language
+en_GB is english - UK language
+hr_HR is croatian language
+it_IT is italian language
+pl_PL is polish language
+rs_RS is serbian language
+ru_RU is russian language
+se_SE is swedish language

@@ -1,0 +1,196 @@
+<?php
+$translate = Zend_Registry::get("translate");
+$rola = $_SESSION['auth_space']['session']['subject_type_name'];
+require_once HELPERS_DIR . DS . 'ApplicationConstants.php';
+?>
+<script type="text/javascript">
+var transferAmount = 0;
+var transferAmountAllowedMax = 0;
+function inputGreaterThanAllowed(){
+	$("#modalMessage").show();
+}
+
+function formatDoubleString(number){
+    var result = parseFloat(number).toLocaleString("en-IN", {minimumFractionDigits: 2});
+    return result;
+}
+
+function backspaceInput(){
+	var amountText = $("#TRANSFER_AMOUNT").val();
+	amountText = amountText.slice(0, -1);
+	if(parseFloat(amountText) > transferAmountAllowedMax) {
+        inputGreaterThanAllowed();
+    }
+	else {
+        $("#TRANSFER_AMOUNT").val(formatDoubleString(amountText));
+        $("#TRANSFER_AMOUNT_HIDDEN").val(amountText);
+    }
+}
+function addInput(value){
+	var amountText = $('#TRANSFER_AMOUNT_HIDDEN').val();
+	if(amountText == '0') {
+        amountText = '';
+    }
+	amountText += value;
+	if(parseFloat(amountText) > transferAmountAllowedMax) {
+        inputGreaterThanAllowed();
+    }
+	else {
+        $('#TRANSFER_AMOUNT_HIDDEN').val(amountText);
+        $("#TRANSFER_AMOUNT").val(formatDoubleString(amountText));
+    }
+}
+function addTransferAmount(amount){
+	var transferAmountL = parseFloat($("#TRANSFER_AMOUNT_HIDDEN").val());
+	if(isNaN(transferAmountL)) {
+        transferAmountL = 0;
+    }
+	transferAmountL += amount;
+	transferAmountL = Math.round(transferAmountL*100)/100;
+	if(transferAmountL <= 0) {
+        transferAmountL = '';
+    }
+	if(transferAmountL > transferAmountAllowedMax) {
+        inputGreaterThanAllowed();
+    }
+	else {
+        $('#TRANSFER_AMOUNT_HIDDEN').val(transferAmountL);
+        $("#TRANSFER_AMOUNT").val(formatDoubleString(transferAmountL));
+    }
+}
+function setTransferAmountMax(){
+	transferAmountAllowedMax = $('#PLAYER_CREDIT_STATUS_HIDDEN').val();
+	$("#TRANSFER_AMOUNT_HIDDEN").val(transferAmountAllowedMax);
+    $("#TRANSFER_AMOUNT").val(formatDoubleString(transferAmountAllowedMax));
+}
+
+function setTransferAmountMaxAndSubmit(){
+    transferAmountAllowedMax = $('#PLAYER_CREDIT_STATUS_HIDDEN').val();
+	$('#TRANSFER_AMOUNT_HIDDEN').val(transferAmountAllowedMax);
+    $('#TRANSFER_AMOUNT').val(formatDoubleString(transferAmountAllowedMax));
+    $("#credit_transfer_payout_form").submit();
+}
+
+function setTransferAmountZero(){
+	transferAmount = 0;
+	$("#TRANSFER_AMOUNT").val('');
+    $('#TRANSFER_AMOUNT_HIDDEN').val('');
+}
+
+function closeErrorDialog(){
+    $("#modalMessage").hide();
+}
+
+$(document).ready(function() {
+	transferAmountAllowedMax = $('#PLAYER_CREDIT_STATUS_HIDDEN').val();
+	setTransferAmountZero();
+	//("#TRANSFER_AMOUNT").numeric({ negative: false });
+    $("#CLEAR").click(function(){
+        setTransferAmountZero();
+    });
+});
+</script>
+<div id="modalMessage" class="modal modal-danger modalMessage" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">
+                    <?php echo $translate->_("Entered amount is too large"); ?>
+                </h4>
+            </div>
+            <div class="modal-body">
+                <?php echo $translate->_("LargerAmountEntered"); ?>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="closeErrorDialog()"><?php echo $translate->_("Close"); ?></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form role="form" id="credit_transfer_payout_form" action="<?php echo $this->escape($this->element->getAction()); ?>" method="<?php echo $this->escape($this->element->getMethod()); ?>">
+     <div class="row hidden">
+        <div class="col-xs-12">
+            <?php echo $this->element->AFF_NAME; ?>
+        </div>
+    </div>
+    <div class="row hidden">
+        <div class="col-xs-12">
+            <?php //if($rola != ROLA_AD_CASHIER_PAYOUT){ ?>
+            <?php echo $this->element->AFF_CREDIT_STATUS; ?>
+            <?php //} ?>
+        </div>
+    </div>
+    <div class="row" style="max-width: 600px;">
+        <div class="col-xs-12">
+            <?php echo $this->element->DIRECT_PLAYER_NAME; ?>
+        </div>
+    </div>
+    <div class="row" style="max-width: 600px;">
+        <div class="col-xs-12">
+            <?php echo $this->element->PLAYER_CREDIT_STATUS; ?>
+        </div>
+    </div>
+    <!--
+    <div class="row" style="max-width: 600px;">
+        <div class="col-xs-12">
+            <?php if($rola != ROLA_AD_CASHIER_PAYOUT){ ?>
+            <?php echo $this->element->PLAYER_CURRENCY; ?>
+            <?php } ?>
+        </div>
+    </div>
+    -->
+
+    <div class="row" style="max-width: 600px;">
+        <div class="col-xs-12">
+            <?php echo $this->element->TRANSFER_AMOUNT; ?>
+        </div>
+    </div>
+
+    <div class="row" style="max-width: 600px;">
+        <div class="col-xs-12">
+            &nbsp;
+        </div>
+    </div>
+
+    <?php if(isset($this->element->SUBMIT_PAYOUT_ALL) || isset($this->element->CANCEL)) { ?>
+    <div class="row" style="max-width: 600px;">
+        <div class="col-xs-6">
+            <?php echo $this->element->SUBMIT_PAYOUT_ALL; ?>
+        </div>
+        <div class="col-xs-6">
+            <?php echo $this->element->CANCEL; ?>
+        </div>
+    </div>
+
+    <div class="row" style="max-width: 600px;">
+        <div class="col-xs-12">
+            &nbsp;
+        </div>
+    </div>
+    <?php } ?>
+
+    <?php if(isset($this->element->SUBMIT_PAYOUT_ALL) || isset($this->element->CANCEL)) { ?>
+    <div class="row" style="max-width: 600px;">
+        <div class="col-xs-6">
+            <?php echo $this->element->SUBMIT; ?>
+        </div>
+        <div class="col-xs-6">
+            <?php echo $this->element->CLEAR; ?>
+        </div>
+    </div>
+    <?php } ?>
+    <div class="row invincible">
+        <div class="col-xs-12">
+            <?php
+            echo $this->element->ENABLED;
+            echo $this->element->AFF_ID;
+            echo $this->element->POSSIBLE_AMOUNT;
+            echo $this->element->AFF_CREDIT_STATUS_HIDDEN;
+            echo $this->element->CSRF;
+            echo $this->element->PLAYER_CREDIT_STATUS_HIDDEN;
+            echo $this->element->TRANSFER_AMOUNT_HIDDEN;
+            ?>
+        </div>
+    </div>
+</form>

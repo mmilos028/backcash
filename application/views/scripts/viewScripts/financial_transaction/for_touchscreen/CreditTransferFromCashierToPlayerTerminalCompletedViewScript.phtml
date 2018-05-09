@@ -1,0 +1,48 @@
+<?php 
+$translate = Zend_Registry::get("translate");
+$rola = $_SESSION['auth_space']['session']['subject_type_name'];
+require_once HELPERS_DIR . DS . 'ApplicationConstants.php';
+?>
+<form role="form" action="<?php echo $this->escape($this->element->getAction()); ?>" method="<?php echo $this->escape($this->element->getMethod()); ?>">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="alert alert-success alert-dismissible">
+                    <h4>
+                        <i class="icon fa fa-check"></i><?php echo $translate->_("Success"); ?>
+                    </h4>
+                    <?php echo $translate->_("Transaction Successfully Completed"); ?>
+                </div>
+            </div>
+        </div>
+    <!--
+        <div class="row" style="max-width: 600px;">
+            <div class="col-xs-12">
+                <?php echo $this->element->AFF_NAME; ?>
+            </div>
+        </div>
+    -->
+    <!--
+        <div class="row" style="max-width: 600px;">
+            <div class="col-xs-12">
+                <?php if($rola != ROLA_AD_CASHIER_PAYOUT){ ?>
+                <?php echo $this->element->AFF_CREDIT_STATUS; ?>
+                <?php } ?>
+            </div>
+        </div>
+    -->
+        <div class="row" style="max-width: 600px;">
+            <div class="col-xs-12">
+                <?php echo $this->element->DIRECT_PLAYER_NAME; ?>
+            </div>
+        </div>
+        <div class="row" style="max-width: 600px;">
+            <div class="col-xs-12">
+                <?php echo $this->element->PLAYER_CREDIT_STATUS; ?>
+            </div>
+        </div>
+        <div class="row" style="max-width: 600px;">
+            <div class="col-xs-12">
+                <?php echo $this->element->SUBMIT; ?>
+            </div>
+        </div>
+</form>

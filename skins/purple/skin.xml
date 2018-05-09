@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- PURPLE THEME -->
+<skin>
+	<userWideScreen>
+		<stylesheet>wide_layout.css</stylesheet>
+		<stylesheet>form.css</stylesheet>
+		<stylesheet>table.css</stylesheet>
+		<stylesheet>themes/purple/jquery-ui-1.10.3.custom.css</stylesheet>
+		<stylesheet>themes/ui.jqgrid.css</stylesheet>
+	</userWideScreen>
+	<loginScreen><!-- Ovo je za login ekran -->
+        <stylesheet>themes/purple/jquery-ui-1.10.3.custom.css</stylesheet>
+		<stylesheet>layout_login.css</stylesheet>
+        <stylesheet>form_login.css</stylesheet>
+	</loginScreen>
+</skin>

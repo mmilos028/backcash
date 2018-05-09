@@ -1,0 +1,166 @@
+<?php
+$translate = Zend_Registry::get('translate');
+$lang = Zend_Registry::get('lang');
+$username = $_SESSION['auth_space']['session']['username'];
+$subject_type = $_SESSION['auth_space']['session']['subject_super_type_name'];
+$rola = $_SESSION['auth_space']['session']['subject_type_name'];
+$config = Zend_Registry::get('config');
+$section_name = $config->getSectionName();
+//role constants
+require_once HELPERS_DIR . DS . 'ApplicationConstants.php';
+$shift_status = NO; //shift for ShiftCashierS has not started
+$shift_start_time = "";
+if($rola == ROLA_AD_SHIFT_CASHIER_S || $rola == ROLA_AD_SHIFT_CASHIER_W){
+	require_once MODELS_DIR . DS . 'CashiersCollectorsModel.php';
+	$session_id = $_SESSION['auth_space']['session']['session_out'];
+	$arrCheckShift = CashiersCollectorsModel::checkOpenShifts($session_id);
+	$shift_status = $arrCheckShift['shift_status'];
+	$shift_start_time = $arrCheckShift['shift_start_time'];
+}
+//check registred roles, if not registred show limited menu
+$limited_menu = true;
+if(in_array($rola, array(SUPER_ROLA_MASTER_CASINO, ROLA_AD_CASHIER, ROLA_AD_CASHIER_SUBLEVEL, ROLA_AD_CASHIER_PAYOUT, ROLA_AD_THAICASHIER, ROLA_AD_COLLECTOR,
+	ROLA_AFF_AFFILIATE, ROLA_AFF_LOCATION, ROLA_AFF_OPERATER, ROLA_ADMIN_CUSTOM, ROLA_ADMIN_CUSTOM_MINI, ROLA_AD_ADMINISTRATOR, ROLA_AD_SHIFT_CASHIER_S,
+	ROLA_AD_SHIFT_CASHIER_W, ROLA_Filijala_5_Serbia_Bgd, ROLA_AF_TEST_BRISI1, ROLA_AF_MASTER_AFFILIATE))){
+	$limited_menu = false;
+}
+$mobile_menu_button_css = "col-md-12 col-sm-12 col-xs-12";
+?>
+<script type="text/javascript">
+</script>
+<style>
+    .super-large-text{
+        padding-top: 15px;
+        font-size: 30px;
+    }
+    div.info-box a{
+        color: white;
+    }
+</style>
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <section class="content">
+        <?php if($limited_menu == false){ ?>
+
+        <!-- change language menu -->
+        <div id="change_language" class="clearfix">
+        </div>
+        <br />
+        <div class="row">
+            <div class="<?php echo $mobile_menu_button_css; ?>">
+                <div class="info-box bg-navy">
+                    <a href="<?php echo $this->url(array('lang'=>'en')); ?>" title="English">
+                    <span class="info-box-icon bg-navy"><i class="ion ion-earth"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-number super-large-text"><?php echo $translate->_('English'); ?></span>
+                    </div>
+                    </a>
+                </div>
+            </div>
+            <div class="<?php echo $mobile_menu_button_css; ?>">
+                <div class="info-box bg-navy">
+                    <a href="<?php echo $this->url(array('lang'=>'de')); ?>" title="Deutsch">
+                    <span class="info-box-icon bg-navy"><i class="ion ion-earth"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-number super-large-text"><?php echo $translate->_('Deutsch'); ?></span>
+                    </div>
+                    </a>
+                </div>
+            </div>
+            <div class="<?php echo $mobile_menu_button_css; ?>">
+                <div class="info-box bg-navy">
+                    <a href="<?php echo $this->url(array('lang'=>'se')); ?>" title="Svenska">
+                    <span class="info-box-icon bg-navy"><i class="ion ion-earth"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-number super-large-text"><?php echo $translate->_('Svenska'); ?></span>
+                    </div>
+                    </a>
+                </div>
+            </div>
+            <div class="<?php echo $mobile_menu_button_css; ?>">
+                <div class="info-box bg-navy">
+                    <a href="<?php echo $this->url(array('lang'=>'da')); ?>" title="Danske">
+                    <span class="info-box-icon bg-navy"><i class="ion ion-earth"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-number super-large-text"><?php echo $translate->_('Danske'); ?></span>
+                    </div>
+                    </a>
+                </div>
+            </div>
+            <div class="<?php echo $mobile_menu_button_css; ?>">
+                <div class="info-box bg-navy">
+                    <a href="<?php echo $this->url(array('lang'=>'it')); ?>" title="Italiano">
+                    <span class="info-box-icon bg-navy"><i class="ion ion-earth"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-number super-large-text"><?php echo $translate->_('Italiano'); ?></span>
+                    </div>
+                    </a>
+                </div>
+            </div>
+            <div class="<?php echo $mobile_menu_button_css; ?>">
+                <div class="info-box bg-navy">
+                    <a href="<?php echo $this->url(array('lang'=>'ru')); ?>" title="Русский">
+                    <span class="info-box-icon bg-navy"><i class="ion ion-earth"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-number super-large-text"><?php echo $translate->_('Русский'); ?></span>
+                    </div>
+                    </a>
+                </div>
+            </div>
+            <div class="<?php echo $mobile_menu_button_css; ?>">
+                <div class="info-box bg-navy">
+                    <a href="<?php echo $this->url(array('lang'=>'pl')); ?>" title="Polski">
+                    <span class="info-box-icon bg-navy"><i class="ion ion-earth"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-number super-large-text"><?php echo $translate->_('Polski'); ?></span>
+                    </div>
+                    </a>
+                </div>
+            </div>
+            <div class="<?php echo $mobile_menu_button_css; ?>">
+                <div class="info-box bg-navy">
+                    <a href="<?php echo $this->url(array('lang'=>'cs')); ?>" title="Český">
+                    <span class="info-box-icon bg-navy"><i class="ion ion-earth"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-number super-large-text"><?php echo $translate->_('Český'); ?></span>
+                    </div>
+                    </a>
+                </div>
+            </div>
+            <div class="<?php echo $mobile_menu_button_css; ?>">
+                <div class="info-box bg-navy">
+                    <a href="<?php echo $this->url(array('lang'=>'hr')); ?>" title="Hrvatski">
+                    <span class="info-box-icon bg-navy"><i class="ion ion-earth"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-number super-large-text"><?php echo $translate->_('Hrvatski'); ?></span>
+                    </div>
+                    </a>
+                </div>
+            </div>
+            <div class="<?php echo $mobile_menu_button_css; ?>">
+                <div class="info-box bg-navy">
+                    <a href="<?php echo $this->url(array('lang'=>'rs')); ?>" title="Srpski">
+                    <span class="info-box-icon bg-navy"><i class="ion ion-earth"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-number super-large-text"><?php echo $translate->_('Srpski'); ?></span>
+                    </div>
+                    </a>
+                </div>
+            </div>
+
+            <div class="<?php echo $mobile_menu_button_css; ?>">
+                <div class="info-box bg-red">
+                    <a href="<?php echo $this->url(array('lang'=>$lang, 'controller'=>'mobile-menu', 'action'=>'index'), null, true);?>">
+                    <span class="info-box-icon bg-red"><i class="ion ion-navicon-round"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-number super-large-text"><?php echo $translate->_('Main Menu'); ?></span>
+                    </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <!-- change language menu -->
+
+        <?php } ?>
+    </section>
+</div>

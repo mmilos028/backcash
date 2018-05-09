@@ -1,0 +1,74 @@
+<?php 
+	$config = Zend_Registry::get('config');
+    $translate = Zend_Registry::get('translate');
+    $lang = Zend_Registry::get('lang');
+	$rememberLoginCredentials = $config->remember_login_credentials;
+?>
+<script type="text/javascript">
+$(document).ready(function() {
+    $('#login_form').submit(function(){
+        $("#login").attr('disabled', 'disabled').addClass('disabled');
+    });
+    <?php if($rememberLoginCredentials == "false"){ ?>
+    $('#login_form').attr("autocomplete", "off");
+    $('#username').attr("autocomplete", "off");
+    $('#password').attr("autocomplete", "off");
+    $('#username').val("");
+    $('#password').val("");
+    <?php } ?>
+    $("#username").focus();
+});
+</script>
+<style>
+    .alert-danger{
+        margin-top: 5px;
+        padding-left: 25px;
+    }
+</style>
+<form id="login_form" action="<?php echo $this->escape($this->element->getAction()); ?>" method="<?php echo $this->escape($this->element->getMethod()); ?>">
+    <div class="form-group has-feedback">
+        <div class="input-group">
+            <span class="input-group-addon">
+                <i class="fa fa-globe fa-fw"></i>
+            </span>
+            <?php echo $this->element->language; ?>
+		</div>
+        <br />
+        <?php if($rememberLoginCredentials == "false"){ ?>
+            <input type="text" style="display:none;" />
+        <?php } ?>
+		<div class="input-group">
+			<span class="input-group-addon"><i class="fa fa-user fa-fw"></i></span>
+			<?php echo $this->element->username; ?>
+		</div>
+        <?php if( count( $this->element->username->getMessages() ) > 0 ){ ?>
+            <?php echo $this->formErrors($this->element->username->getMessages(), array('class' => 'alert alert-danger') ); ?>
+        <?php } ?>
+		<br />
+        <?php if($rememberLoginCredentials == "false"){ ?>
+            <input type="text" style="display:none;" />
+        <?php } ?>
+		<div class="input-group">
+			<span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
+			<?php echo $this->element->password; ?>
+		</div>
+        <?php if( count( $this->element->password->getMessages() ) > 0 ){ ?>
+            <?php echo $this->formErrors($this->element->password->getMessages(), array('class' => 'alert alert-danger') ); ?>
+        <?php } ?>
+
+        <?php if($this->element->captcha != null){ ?>
+            <div class="input-group">
+            <?php echo $this->element->captcha; ?>
+            </div>
+        <?php } ?>
+        <?php if( isset($this->element->captcha) && count( $this->element->captcha->getMessages() ) > 0 ){ ?>
+            <?php echo $this->formErrors($this->element->captcha->getMessages(), array('class' => 'alert alert-danger') ); ?>
+        <?php } ?>
+        <?php echo $this->element->login; ?>
+
+        <?php if(isset($config->backofficeDesktopApplicationLink)){ ?>
+        <br />
+        <a class="btn btn-lg btn-default btn-block pull-down" href="<?php echo $config->backofficeDesktopApplicationLink; ?>">Desktop Version</a>
+        <?php } ?>
+    </div>
+</form>

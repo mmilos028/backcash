@@ -1,0 +1,8 @@
+BackOffice uses zend frameworks layout engine for templating entire application
+All layout files are in scripts folder:
+
+footer.phtml is for bottom of application 
+horizontal_menu.phtml contains all main menu items in backoffice
+layout_horizontal_menu.phtml is template for backoffice to use horizontal main menu
+layout_login.phtml is layout for login page of backoffice only login form is rendered here
+statistics_footer.phtml is rendering backoffice statistics this is brief report

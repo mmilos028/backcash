@@ -1,0 +1,118 @@
+<?php 
+$months_in_past = $_SESSION['report_operation']['months_in_past'];
+?>
+<script type="text/javascript">
+$(document).ready(function() {
+    var now = new Date();
+    $.fn.datepicker.defaults.format = "dd-M-yyyy";
+    $.fn.datepicker.defaults.allowDeselection = false;
+
+    var currentTime = new Date();
+	var startDateFrom = new Date(currentTime.getFullYear(), currentTime.getMonth() - <?php echo $months_in_past; ?>, 1);
+	var startDateTo = new Date(currentTime.getFullYear(), currentTime.getMonth() +1, 0);
+
+    var previousDate2;
+	$("#END_DATE").datepicker({
+        dateFormat: 'dd-M-yyyy',
+        changeYear: true,
+        changeMonth: true,
+        showWeek: true,
+        enableOnReadonly: true,
+        keyboardNavigation: true,
+        showOnFocus: true,
+        todayHighlight: true,
+        forceParse: true,
+        autoclose: true,
+        startDate: startDateFrom, numberOfMonths: 1
+    });
+    // Save date picked
+    $("#END_DATE").on('show', function () {
+        previousDate2 = $(this).val();
+    });
+    // Replace with previous date if no date is picked or if same date is picked to avoide toggle error
+    $("#END_DATE").on('hide', function () {
+        if ($(this).val() === '' || $(this).val() === null) {
+            $(this).val(previousDate2).datepicker('update');
+        }
+    });
+
+
+    var previousDate1;
+    $("#START_DATE").datepicker({
+        dateFormat: 'dd-M-yyyy',
+        changeYear: true,
+        changeMonth: true,
+        showWeek: true,
+        enableOnReadonly: true,
+        keyboardNavigation: true,
+        showOnFocus: true,
+        todayHighlight: true,
+        forceParse: true,
+        autoclose: true,
+		startDate: startDateFrom, endDate: startDateTo, numberOfMonths: 1
+    });
+    // Save date picked
+    $("#START_DATE").on('show', function () {
+        previousDate1 = $(this).val();
+    });
+    // Replace with previous date if no date is picked or if same date is picked to avoide toggle error
+    $("#START_DATE").on('hide', function () {
+        if ($(this).val() === '' || $(this).val() === null) {
+            $(this).val(previousDate1).datepicker('update');
+        }
+    });
+
+    $("#END_DATE").change(function() {
+        try {
+            var date1 = $("#START_DATE").datepicker('getDate');
+            var date2 = $("#END_DATE").datepicker('getDate');
+            if (date2 < date1) {
+                $("#END_DATE").datepicker('setDate', $("#START_DATE").datepicker('getDate'));
+            }
+        }catch(ex){
+        }
+    });
+	<?php if($_SESSION['auth_space']['session']['change_startdate'] == true){ ?>
+    $("#START_DATE").change(function(){
+        try {
+            var date1 = $("#START_DATE").datepicker('getDate');
+            var date2 = $("#END_DATE").datepicker('getDate');
+            if (date2 < date1) {
+                $("#START_DATE").datepicker('setDate', $("#END_DATE").datepicker('getDate'));
+            }
+        }catch(ex){
+        }
+    });
+    <?php } ?>
+
+    $(".startdate").on('click',function(){
+          $('#START_DATE').focus();
+    });
+    $(".enddate").on('click',function(){
+         $('#END_DATE').focus();
+    });
+});
+</script>
+<br />
+<form id="form-summary-report" class="form-inline pull-right" action="<?php echo $this->escape($this->element->getAction()); ?>"
+	method="<?php echo $this->escape($this->element->getMethod()); ?>">
+
+    <?php if(isset($this->element->START_DATE)){?>
+        <div class="input-group date startdate">
+            <?php echo $this->element->START_DATE; ?>
+            <div class="input-group-addon">
+                <span class="glyphicon glyphicon-th"></span>
+            </div>
+        </div>
+    <?php }?>
+
+    <?php if(isset($this->element->END_DATE)){ ?>
+        <div class="input-group date enddate">
+            <?php echo $this->element->END_DATE; ?>
+            <div class="input-group-addon">
+                <span class="glyphicon glyphicon-th"></span>
+            </div>
+        </div>
+    <?php } ?>
+    <?php echo $this->element->GENERATE_REPORT; ?>
+</form>

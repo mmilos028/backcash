@@ -1,0 +1,25 @@
+<?php
+$translate = Zend_Registry::get("translate");
+$labelClass ="";
+if($this->element->isRequired())$labelClass .="required";
+?>
+    <div class="form-group <?php echo $labelClass; ?>">
+        <div class="col-xs-5 pull-left">
+        <?php if (strlen($this->element->getLabel()) > 0) { ?>
+            <label class="control-label" for="<?php echo $this->element->getName(); ?>"><?php echo $this->element->getLabel(); ?></label>
+        <?php }?>
+        </div>
+        <div class="col-xs-7 pull-left">
+        <?php echo $this->{$this->element->helper}
+            ($this->element->getName(), $this->element->getValue(), $this->element->getAttribs());
+        ?>
+        </div>
+        <?php if ($this->element->hasErrors()) { ?>
+        <div class="col-xs-12">
+            <div class="alert alert-warning alert-dismissible">
+                <?php echo $this->formErrors($this->element->getMessages()); ?>
+            </div>
+        </div>
+        <?php } ?>
+    </div>
+

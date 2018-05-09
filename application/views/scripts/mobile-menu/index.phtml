@@ -1,0 +1,259 @@
+<?php
+$translate = Zend_Registry::get('translate');
+$lang = Zend_Registry::get('lang');
+$username = $_SESSION['auth_space']['session']['username'];
+$subject_type = $_SESSION['auth_space']['session']['subject_super_type_name'];
+$rola = $_SESSION['auth_space']['session']['subject_type_name'];
+$config = Zend_Registry::get('config');
+$section_name = $config->getSectionName();
+//role constants
+require_once HELPERS_DIR . DS . 'ApplicationConstants.php';
+$shift_status = NO; //shift for ShiftCashierS has not started
+$shift_start_time = "";
+if($rola == ROLA_AD_SHIFT_CASHIER_S || $rola == ROLA_AD_SHIFT_CASHIER_W){
+	require_once MODELS_DIR . DS . 'CashiersCollectorsModel.php';
+	$session_id = $_SESSION['auth_space']['session']['session_out'];
+	$arrCheckShift = CashiersCollectorsModel::checkOpenShifts($session_id);
+	$shift_status = $arrCheckShift['shift_status'];
+	$shift_start_time = $arrCheckShift['shift_start_time'];
+}
+//check registred roles, if not registred show limited menu
+$limited_menu = true;
+if(in_array($rola, array(SUPER_ROLA_MASTER_CASINO, ROLA_AD_CASHIER, ROLA_AD_CASHIER_SUBLEVEL, ROLA_AD_CASHIER_PAYOUT, ROLA_AD_THAICASHIER, ROLA_AD_COLLECTOR,
+	ROLA_AFF_AFFILIATE, ROLA_AFF_LOCATION, ROLA_AFF_OPERATER, ROLA_ADMIN_CUSTOM, ROLA_ADMIN_CUSTOM_MINI, ROLA_AD_ADMINISTRATOR, ROLA_AD_SHIFT_CASHIER_S,
+	ROLA_AD_SHIFT_CASHIER_W, ROLA_Filijala_5_Serbia_Bgd, ROLA_AF_TEST_BRISI1, ROLA_AF_MASTER_AFFILIATE))){
+	$limited_menu = false;
+}
+
+
+$flag_general = false; //will not be seen
+if (($rola == ROLA_AD_SHIFT_CASHIER_S || $rola == ROLA_AD_SHIFT_CASHIER_W) && $shift_status == YES) {
+    $flag_general = true;
+}
+else {
+    if (($rola == ROLA_AD_SHIFT_CASHIER_S || $rola == ROLA_AD_SHIFT_CASHIER_W) && $shift_status == NO) {
+        $flag_general = false;
+    }
+}
+
+if ($rola == ROLA_ADMIN_CUSTOM_MINI) {
+    $flag_general = false;
+}
+if($rola == ROLA_AD_CASHIER || $rola == ROLA_AD_CASHIER_PAYOUT || $rola == ROLA_AD_CASHIER_SUBLEVEL ||
+    $rola == ROLA_AFF_AFFILIATE || $rola == ROLA_AFF_LOCATION || $rola == ROLA_AFF_OPERATER || $rola == ROLA_AD_ADMINISTRATOR)
+{
+    $flag_general = true;
+}
+
+$flag_menu_reports = false;
+if(in_array($rola, array(ROLA_AD_CASHIER, ROLA_AD_CASHIER_PAYOUT, ROLA_AD_CASHIER_SUBLEVEL, ROLA_AD_SHIFT_CASHIER_S, ROLA_AD_SHIFT_CASHIER_W))){
+    $flag_menu_reports = false;
+}else{
+    $flag_menu_reports = true;
+}
+
+if($rola == ROLA_ADMIN_CUSTOM){
+	$flag_general = true;
+	$flag_reports = true;
+	$flag_menu_reports = true;
+}
+
+$flag_players = false;
+if($rola == ROLA_AD_CASHIER || $rola == ROLA_AD_CASHIER_PAYOUT || $rola == ROLA_AD_CASHIER_SUBLEVEL)
+{
+    $flag_players = false;
+}else{
+    $flag_players = true;
+}
+
+$flat_terminals = false;
+if($rola == ROLA_AD_CASHIER || $rola == ROLA_AD_CASHIER_PAYOUT || $rola == ROLA_AD_CASHIER_SUBLEVEL)
+{
+    $flag_terminals = false;
+}else{
+    $flag_terminals = true;
+}
+
+$flag_cashier_reports = false;
+if($rola == ROLA_AD_CASHIER || $rola == ROLA_AD_CASHIER_PAYOUT || $rola == ROLA_AD_CASHIER_SUBLEVEL)
+{
+    $flag_cashier_reports = true;
+}else{
+    $flag_cashier_reports = false;
+}
+
+
+$mobile_menu_button_css = "col-md-12 col-sm-12 col-xs-12";
+?>
+<script type="text/javascript">
+</script>
+<style>
+    .super-large-text{
+        padding-top: 15px;
+        font-size: 30px;
+    }
+    div.info-box a{
+        color: white;
+    }
+</style>
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <section class="content">
+        <?php if($limited_menu == false){ ?>
+        <br />
+        <div class="row">
+
+            <?php if($rola == ROLA_AD_SHIFT_CASHIER_S || $rola == ROLA_AD_SHIFT_CASHIER_W){?>
+                <?php if(($rola == ROLA_AD_SHIFT_CASHIER_S || $rola == ROLA_AD_SHIFT_CASHIER_W) && $shift_status == NO){?>
+                    <div class="<?php echo $mobile_menu_button_css; ?>">
+                        <div class="info-box bg-maroon">
+                            <a href="<?php echo $this->url(array('lang'=>$lang, 'controller'=>'cashiers-collectors', 'action'=>'start-shift'), null, true);?>">
+                            <span class="info-box-icon bg-maroon"><i class="ion ion-card"></i></span>
+                            <div class="info-box-content">
+                                <span class="info-box-number super-large-text"><?php echo $translate->_('Start Shift'); ?></span>
+                            </div>
+                            </a>
+                        </div>
+                    </div>
+                <?php }?>
+                <?php if(($rola == ROLA_AD_SHIFT_CASHIER_S || $rola == ROLA_AD_SHIFT_CASHIER_W) && $shift_status == YES){?>
+                    <div class="<?php echo $mobile_menu_button_css; ?>">
+                        <div class="info-box bg-teal-active">
+                            <a href="<?php echo $this->url(array('lang'=>$lang, 'controller'=>'cashiers-collectors', 'action'=>'end-shift'), null, true);?>">
+                            <span class="info-box-icon bg-teal-active"><i class="ion ion-card"></i></span>
+                            <div class="info-box-content">
+                                <span class="info-box-number super-large-text"><?php echo $translate->_('End Shift'); ?></span>
+                            </div>
+                            </a>
+                        </div>
+                    </div>
+                <?php } ?>
+            <?php } ?>
+
+            <?php if($flag_general){ ?>
+            <?php if($rola != ROLA_AD_CASHIER_PAYOUT) { ?>
+                    <div class="<?php echo $mobile_menu_button_css; ?>">
+                        <div class="info-box bg-green">
+                            <a href="<?php echo $this->url(array('lang' => $lang, 'controller' => 'financial-transaction', 'action' => 'deposit-list'), null, true); ?>">
+                                <span class="info-box-icon bg-green"><i class="ion ion-cash"></i></span>
+                                <div class="info-box-content">
+                                    <span
+                                        class="info-box-number super-large-text"><?php echo $translate->_('Deposit'); ?></span>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                <?php
+                }
+            }
+            ?>
+
+            <?php if($flag_general){ ?>
+            <div class="<?php echo $mobile_menu_button_css; ?>">
+                <div class="info-box bg-green">
+                    <a href="<?php echo $this->url(array('lang'=>$lang, 'controller'=>'financial-transaction', 'action'=>'withdraw-list'), null, true);?>">
+                        <span class="info-box-icon bg-green"><i class="ion ion-cash"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-number super-large-text"><?php echo $translate->_('Withdraw'); ?></span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <?php
+            }
+            ?>
+
+            <?php if($flag_terminals){ ?>
+            <div class="<?php echo $mobile_menu_button_css; ?>">
+                <div class="info-box bg-blue">
+                    <a href="<?php echo $this->url(array('lang'=>$lang, 'controller'=>'mobile-menu', 'action'=>'terminal-players'), null, true);?>">
+                        <span class="info-box-icon bg-blue"><i class="ion ion-android-desktop"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-number super-large-text"><?php echo $translate->_('Terminals'); ?></span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <?php
+            }
+            ?>
+
+            <?php if($flag_players){ ?>
+            <div class="<?php echo $mobile_menu_button_css; ?>">
+                <div class="info-box bg-blue">
+                    <a href="<?php echo $this->url(array('lang'=>$lang, 'controller'=>'mobile-menu', 'action'=>'players'), null, true);?>">
+                        <span class="info-box-icon bg-blue"><i class="ion ion-person"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-number super-large-text"><?php echo $translate->_('Players'); ?></span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <?php
+            }
+            ?>
+
+            <?php if($flag_general){ ?>
+            <?php if($flag_menu_reports) { ?>
+                    <div class="<?php echo $mobile_menu_button_css; ?>">
+                        <div class="info-box bg-purple">
+                            <a href="<?php echo $this->url(array('lang' => $lang, 'controller' => 'mobile-menu', 'action' => 'reports'), null, true); ?>">
+                                <span class="info-box-icon bg-purple"><i class="ion ion-stats-bars"></i></span>
+                                <div class="info-box-content">
+                                    <span class="info-box-number super-large-text"><?php echo $translate->_('Reports'); ?></span>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                <?php
+                }
+            }
+            ?>
+
+            <?php if($flag_general){ ?>
+            <?php if($flag_cashier_reports) { ?>
+                    <div class="<?php echo $mobile_menu_button_css; ?>">
+                        <div class="info-box bg-purple">
+                            <a href="<?php echo $this->url(array('lang'=>$lang,'controller'=>'cashier-reports', 'action'=>'cashier-history'), null, true);?>">
+                                <span class="info-box-icon bg-purple"><i class="ion ion-stats-bars"></i></span>
+                                <div class="info-box-content">
+                                    <span class="info-box-number super-large-text"><?php echo $translate->_('My History'); ?></span>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                <?php
+                }
+            }
+            ?>
+
+            <div class="<?php echo $mobile_menu_button_css; ?>">
+                <div class="info-box bg-navy">
+                    <a href="<?php echo $this->url(array('lang'=>$lang, 'controller'=>'mobile-menu', 'action'=>'languages'), null, true);?>">
+                    <span class="info-box-icon bg-navy"><i class="ion ion-earth"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-number super-large-text"><?php echo $translate->_('Language'); ?></span>
+                    </div>
+                    </a>
+                </div>
+            </div>
+
+            <div class="<?php echo $mobile_menu_button_css; ?>">
+                <div class="info-box bg-red">
+                    <a href="<?php echo $this->url(array('lang'=>$lang, 'controller'=>'auth', 'action'=>'logout'), null, true);?>">
+                    <span class="info-box-icon bg-red"><i class="fa fa-sign-out"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-number super-large-text"><?php echo $translate->_('Logout'); ?></span>
+                    </div>
+                    </a>
+                </div>
+            </div>
+
+
+        </div>
+
+        <!-- BELLOW ARE SUBMENUES --->
+
+        <?php } ?>
+    </section>
+</div>

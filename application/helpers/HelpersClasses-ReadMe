@@ -1,0 +1,12 @@
+Here are some classes that are used as helpers by other classes in application hierarchy.
+
+CursorToArrayHelper class is used to convert ref cursor from oracle database into php array structure
+or to return special structure of subjects affiliates hierarchy for backoffice to render.
+
+LanguageSetup class is used to help in translating backoffice into different languages and parse files
+from configs / translations into php arrays.
+
+OracleAuthInterface is special class used when user logs into backoffice, provided username and password 
+are compared to database and user can login if they are correct.
+This class also reads clients ip address and searches for country and city (geolocation) through public web service 
+and writes them with user informations into database

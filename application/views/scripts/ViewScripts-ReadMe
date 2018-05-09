@@ -1,0 +1,4 @@
+View scripts are rendered in clients browser, here is
+everything that client sees in his browser.
+Controller is bussines logic of backoffice, Models are used for direct communication with
+database and View is called by controller methods to show results on screen.  

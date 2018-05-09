@@ -1,0 +1,158 @@
+<?php
+$translate = Zend_Registry::get('translate');
+$lang = Zend_Registry::get('lang');
+$username = $_SESSION['auth_space']['session']['username'];
+$subject_type = $_SESSION['auth_space']['session']['subject_super_type_name'];
+$rola = $_SESSION['auth_space']['session']['subject_type_name'];
+$config = Zend_Registry::get('config');
+$section_name = $config->getSectionName();
+//role constants
+require_once HELPERS_DIR . DS . 'ApplicationConstants.php';
+?>
+<!-- LAYOUT DESKTOP -->
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="googlebot" content="noarchive" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title><?php echo $translate->_("General Title"); ?></title>
+  <!-- Tell the browser to be responsive to screen width -->
+  <meta content="width=device-width, initial-scale=1.0, user-scalable=no" name="viewport">
+  <?php
+    $this->headLink()
+        //Bootstrap 3.3.6
+        ->appendStylesheet($this->baseUrl() . '/js/adminlte/bootstrap/css/bootstrap.min.css')
+        //Font Awesome
+        ->appendStylesheet($this->baseUrl() . '/css/font-awesome/css/font-awesome.min.css')
+        //Ionicons
+        ->appendStylesheet($this->baseUrl() . '/css/ionicons/css/ionicons.min.css')
+        //theme style
+        ->appendStylesheet($this->baseUrl() . '/js/adminlte/dist/css/AdminLTE.min.css')
+        //theme all skin
+        //->appendStylesheet($this->baseUrl() . '/js/adminlte/dist/css/skins/skin-blue.min.css')
+        ->appendStylesheet($this->baseUrl() . '/js/adminlte/dist/css/skins/_all-skins.min.css')
+        //backoffice styles
+        ->appendStylesheet($this->baseUrl() . '/css/backoffice/backoffice_styles.css')
+        ->appendStylesheet($this->baseUrl() . '/css/backoffice/backoffice-theme2.css')
+        ->appendStylesheet($this->baseUrl() . '/css/backoffice/backoffice-theme.css')
+        //datepicker theme
+        ->appendStylesheet($this->baseUrl() . '/js/adminlte/plugins/datepicker/datepicker3.css')
+        ->appendStylesheet($this->baseUrl() . '/js/adminlte/plugins/daterangepicker/daterangepicker.css')
+
+        ->appendStylesheet($this->baseUrl() . '/js/adminlte/plugins/datetimepicker/css/bootstrap-datetimepicker.min.css')
+
+        ->appendStylesheet($this->baseUrl() . '/js/adminlte/plugins/iCheck/all.css')
+    ;
+    echo $this->headLink();
+
+    $this->headScript()
+        ->appendFile($this->baseUrl().'/js/adminlte/js/html5shiv.min.js', 'text/javascript', array('conditional' => 'lt IE 9'))
+        ->appendFile($this->baseUrl().'/js/adminlte/js/respond.min.js', 'text/javascript', array('conditional' => 'lt IE 9'))
+        //jQuery 2.2.3
+        ->appendFile($this->baseUrl().'/js/adminlte/plugins/jQuery/jquery-2.2.3.min.js', 'text/javascript')
+        //Bootstrap 3.3.6
+        ->appendFile($this->baseUrl().'/js/adminlte/bootstrap/js/bootstrap.min.js', 'text/javascript')
+        //slimscroll
+        ->appendFile($this->baseUrl().'/js/adminlte/plugins/slimScroll/jquery.slimscroll.min.js', 'text/javascript')
+        //fastclick
+        ->appendFile($this->baseUrl().'/js/adminlte/plugins/fastclick/fastclick.min.js', 'text/javascript')
+        //select
+        ->appendFile($this->baseUrl().'/js/adminlte/plugins/select2/select2.min.js', 'text/javascript')
+        //bootstrap datepicker
+        ->appendFile($this->baseUrl().'/js/adminlte/plugins/datepicker/bootstrap-datepicker.js', 'text/javascript')
+        //jquery numeric library
+        ->appendFile($this->baseUrl() . '/js/jquery.numeric.js', 'text/javascript')
+        //mask input fields
+        ->appendFile($this->baseUrl().'/js/mask.js', 'text/javascript')
+        ->appendFile($this->baseUrl().'/js/adminlte/dist/js/adminlte.min.js', 'text/javascript')
+        //block user interface code
+        ->appendFile($this->baseUrl() . '/js/jquery.blockUI.js', 'text/javascript')
+        ->appendFile($this->baseUrl() . '/js/backoffice/desktop/block_interface.js', 'text/javascript')
+
+        ->appendFile($this->baseUrl() . '/js/adminlte/plugins/moment/min/moment.min.js', 'text/javascript')
+        ->appendFile($this->baseUrl() . '/js/adminlte/plugins/transition.js', 'text/javascript')
+        ->appendFile($this->baseUrl() . '/js/adminlte/plugins/collapse.js', 'text/javascript')
+        ->appendFile($this->baseUrl() . '/js/adminlte/plugins/datetimepicker/js/bootstrap-datetimepicker.min.js', 'text/javascript')
+    ;
+    echo $this->headScript();
+  ?>
+    <link rel="shortcut icon" type="image/x-icon" href="<?php echo $this->baseUrl() . '/images/favicon.ico'; ?>"/>
+    <?php
+	    require_once('session_timeout.php');
+    ?>
+    <script type="text/javascript">
+    $(document).ready(function() {
+        jQuery(window).bind('beforeunload', blockUI);
+        <?php
+        $rola = $_SESSION['auth_space']['session']['subject_type_name']; //rola
+        if($config->getSectionName() != "fungames.nu"){
+        if($_SESSION['auth_space']['session']['panic_status'] == OFF && ($rola == ROLA_AD_CASHIER || $rola == ROLA_AD_CASHIER_PAYOUT || $rola == ROLA_AD_SHIFT_CASHIER_S || $rola == ROLA_AD_SHIFT_CASHIER_W)){
+        ?>
+                $(document).bind('keyup', function (event) {
+                    var code = (event.keyCode ? event.keyCode : event.which);
+                    if (code == '27' || code == 27) {
+                        $.ajax({
+                            async: true,
+                            type: "POST",
+                            url: "<?php echo $this->url(array('controller'=>'panic', 'action'=>'panic')); ?>",
+                            success: function (data) {
+                                top.location.replace(data);
+                                return true;
+                            },
+                            failure: function () {
+                                top.location.replace("http://www.google.com");
+                            }
+                        });
+                        return true;
+                    }
+                    return true;
+                });
+        <?php
+            }
+        }
+         ?>
+    });
+    function goBackAction(){
+        window.history.back();
+    }
+    </script>
+</head>
+<!-- ADD THE CLASS fixed TO GET A FIXED HEADER AND SIDEBAR LAYOUT -->
+<!-- the fixed layout is not compatible with sidebar-mini -->
+<body class="skin-blue fixed sidebar-mini" oncontextmenu="return false;">
+<!-- Site wrapper -->
+<div class="wrapper">
+
+    <div id="loadingPage" style="display: none;">
+	    <h3><?php echo $translate->_('Page Loading Message');?></h3>
+	    <img alt="" src="<?php echo $this->baseUrl() . '/images/progressbar-loader.gif'; ?>"/>
+    </div>
+
+    <?php
+        echo $this->render('desktop_navigation/header.phtml');
+    ?>
+
+  <!-- =====================LEFT SIDEBAR MENU========================== -->
+
+    <?php
+        echo $this->render('desktop_navigation/left_sidebar_menu.phtml');
+    ?>
+
+  <!-- =======================CONTENT======================== -->
+
+
+    <?php
+        echo $this->layout()->content;
+    ?>
+
+  <!-- ======================FOOTER========================= -->
+
+    <?php
+        echo $this->render('footer.phtml');
+    ?>
+</div>
+<!-- ./wrapper -->
+</body>
+</html>

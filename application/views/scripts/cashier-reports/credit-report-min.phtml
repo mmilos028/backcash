@@ -1,0 +1,149 @@
+<?php
+$translate = Zend_Registry::get("translate");
+$lang = Zend_Registry::get("lang");
+$title = $translate->_("Credit Report");
+$this->title = $title;
+$this->headTitle($title);
+require_once HELPERS_DIR . DS . 'ApplicationConstants.php';
+require_once HELPERS_DIR . DS . 'RoleHelper.php';
+require_once HELPERS_DIR . DS . 'NumberHelper.php';
+?>
+<!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <section class="content-header">
+        <span>
+        <a onClick="goBackAction()" class="btn btn-warning btn-lg pull-right">
+            <?php echo $translate->_("Back"); ?>
+        </a>
+            <br /><br />
+        </span>
+    </section>
+    <section class="content-header">
+        <h1>
+            <?php
+                echo $title;
+            ?>
+        </h1>
+        <ol class="breadcrumb">
+            <li><i class="fa fa-home"></i>
+                <?php echo $translate->_("Reports"); ?>
+            </li>
+            <li class="active">
+                <a href="<?php echo $this->url(array('lang'=>$lang, 'controller'=>'cashier-reports', 'action'=>'credit-report-min'), null, true); ?>" title="<?php echo $title; ?>">
+                    <?php echo $title; ?>
+                </a>
+            </li>
+        </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <!-- Default box -->
+      <div class="box box-default">
+        <div class="box-body">
+            <?php if($this->is_root != "1"){ ?>
+            <div class="row">
+                <div class="col-xs-12">
+                    <a class="btn btn-primary" href="<?php echo $this->url(array('lang'=>$lang, 'controller'=>'cashier-reports', 'action'=>'credit-report-min-up-level', 'AFFILIATES'=>$this->affiliate_id));?>">
+                        <i class="fa fa-arrow-up"></i>
+                        <?php echo $translate->_("Up Level"); ?>
+                    </a>
+                </div>
+            </div>
+            <?php } ?>
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="form-group">
+                        <?php echo $this->form; ?>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 table-responsive">
+                    <table id="table" class="table table-bordered">
+                        <thead>
+                            <tr class="bg-blue-active">
+                                <th>&nbsp;TOTAL&nbsp;</th>
+                                <th>&nbsp;<?php echo $translate->_("Netto"); ?>&nbsp;</th>
+                                <th>&nbsp;<?php echo $translate->_("Currency"); ?>&nbsp;</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach($this->totalApt['cursor'] as $data){ ?>
+                            <tr  class="bg-blue">
+                                <td style="text-align: right;">
+                                    <?php echo $data['user_type']; ?>
+                                </td>
+		                        <td title="<?php echo $translate->_("Netto"); ?>" style="text-align: right;">
+                                    <?php echo NumberHelper::format_double($data['game_win']); ?>
+                                </td>
+		                        <td title="<?php echo $translate->_("Currency"); ?>" style="text-align: center;">
+                                    <?php echo $data['currency']; ?>
+                                </td>
+                            </tr>
+                            <?php }?>
+                            <?php foreach($this->total['cursor'] as $data){ ?>
+                            <tr class="bg-green">
+                                <td style="text-align: right;">
+                                   TOTAL
+                                </td>
+		                        <td title="<?php echo $translate->_("Netto"); ?>" style="text-align: right;">
+                                    <?php echo NumberHelper::format_double($data['game_win']); ?>
+                                </td>
+		                        <td title="<?php echo $translate->_("Currency"); ?>" style="text-align: center;">
+                                    <?php echo $data['currency']; ?>
+                                </td>
+                            </tr>
+                            <?php }?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 table-responsive">
+                    <table id="table" class="table table-bordered">
+                        <thead>
+                            <tr class="bg-blue-active">
+                                <th>&nbsp;<?php echo $translate->_("Name"); ?>&nbsp;</th>
+                                <th>&nbsp;<?php echo $translate->_("Netto"); ?>&nbsp;</th>
+                                <th>&nbsp;<?php echo $translate->_("Currency"); ?>&nbsp;</th>
+                                <!--<th>&nbsp;<?php echo $translate->_("Flash / HTML5");?>&nbsp;</th>-->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach($this->paginator as $data){ ?>
+                            <tr <?php if($data['super_role_for'] != SUPER_ROLA_PLAYER) echo "class=\"bg-blue\"";  if($data['super_role_for'] == SUPER_ROLA_PLAYER) echo "class=\"bg-green\""; ?>>
+                                <td title="<?php echo $translate->_("Name"); ?>">
+                                    <?php if($data['super_role_for'] == SUPER_ROLA_AFFILIATES || $data['super_role_for'] == SUPER_ROLA_ADMINISTRATOR){ ?>
+                                    <a style="color: white; text-decoration: underline;" href="<?php echo $this->url(array('lang'=>$lang, 'controller'=>'cashier-reports', 'action'=>'credit-report-min-link', 'AFFILIATES'=>$data['subject_id_for']));?>">
+                                    <?php echo $data['name_from']; ?></a>
+                                    <?php }else{ ?>
+                                    <?php echo $data['name_from']; ?>
+                                    <?php }?>
+                                </td>
+		                        <td title="<?php echo $translate->_("Netto");?>" style="text-align: right;">
+                                    <?php echo NumberHelper::format_double($data['game_win']); ?>
+                                </td>
+		                        <td title="<?php echo $translate->_("Currency"); ?>" style="text-align: center;">
+                                    <?php echo $data['currency']; ?>
+                                </td>
+                                <!--
+                                <td title="<?php echo $translate->_("Flash / HTML5");?>">
+                                    <?php echo $data['version']; ?>
+                                </td>
+                                -->
+                            </tr>
+                            <?php }?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+        <!-- /.box-body -->
+      </div>
+      <!-- /.box -->
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->

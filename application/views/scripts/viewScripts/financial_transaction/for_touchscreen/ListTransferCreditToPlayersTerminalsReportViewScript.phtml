@@ -1,0 +1,47 @@
+<?php
+$translate = Zend_Registry::get("translate");
+?>
+<script type="text/javascript">
+$(document).ready(function() {
+	$('#form_list_players_terminals').find("select").submit(function(){
+		$('input[type=submit]', this).addClass('disabled');
+	});
+   $( "#form_list_players_terminals").find("select").change(function() {
+      $('#form_list_players_terminals').submit();
+    });
+});
+</script>
+
+<form id="form_list_players_terminals" class="form-inline" action="<?php echo $this->escape($this->element->getAction()); ?>"
+	method="<?php echo $this->escape($this->element->getMethod()); ?>">
+
+    <div class="row">
+        <?php if(isset($this->element->CURRENCY)){ ?>
+        <div class="col-xs-2">
+            <?php echo $this->element->CURRENCY; ?>
+        </div>
+        <?php } ?>
+
+        <?php if(isset($this->element->PAGE)){ ?>
+        <div class="col-xs-5">
+            <?php echo $this->element->PAGE; ?>
+        </div>
+        <?php } ?>
+
+        <?php if(isset($this->element->LIMIT)){ ?>
+        <div class="col-xs-5">
+                <?php echo $this->element->LIMIT; ?>
+        </div>
+        <?php } ?>
+
+        <?php /*if(isset($this->GENERATE_REPORT)){ ?>
+        <div class="col-xs-2">
+            <?php //echo $this->element->GENERATE_REPORT; ?>
+        </div>
+        <?php }*/ ?>
+
+    </div>
+
+
+    &nbsp;&nbsp;
+</form>

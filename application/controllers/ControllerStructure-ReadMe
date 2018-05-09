@@ -1,0 +1,20 @@
+Controller classes are bussines logic for backoffice system.
+Each class containes init() method which helps that backoffice has 
+the same template rules for all pages, it also initialiazes some variables used in controller class.
+Usualy pagination information is setted here if it does not exist in session memory.
+
+When user calls for any page in backoffice preDispatch() method is called each time before loading the page.
+When user logs into backoffice his informations are stored in applications session space.
+In this method is checked if user is authenticated every time before calling some page.
+Also when user enters backoffice successfully this is stored in database and therefore is 
+checked if users session is active and regular in database from backoffice system.
+If users session is not regular in application and database space then user is logged out.
+
+Each method from class Controllers contains reserved word Action in its ending, for example
+MethodAction() calls for page method and shows in browser view page
+ which is found in application/views/scripts/CONTROLLES_CLASS_NAME/method.phtml location. 
+ 
+Some classes contain private members such as:
+- session_id is session number given by opening user session from database
+- session_space contains informations from user during his entering into backoffice
+- defaultPerPage is number of items per page usually is 25 or given by user when generating report from limit field

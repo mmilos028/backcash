@@ -1,0 +1,138 @@
+<?php $translate = Zend_Registry::get("translate"); ?>
+<script type="text/javascript">
+function changeTerminalType(){
+	if($("#TERMINAL_TYPE").val() == "A" || $("#TERMINAL_TYPE").val() == "T"){
+		$("#TERMINAL_PLAYER_KEY_EXIT").removeAttr('disabled');
+		$("#TERMINAL_PLAYER_KEY_EXIT").removeClass('disabled');
+		$("#TERMINAL_PLAYER_ENTER_PASSWORD").removeAttr('disabled');
+		$("#TERMINAL_PLAYER_ENTER_PASSWORD").removeClass('disabled');
+		checkIfEnterPasswordAllowed();
+	}else{
+		$("#TERMINAL_PLAYER_KEY_EXIT").attr('disabled','disabled');
+		$("#TERMINAL_PLAYER_KEY_EXIT").addClass('disabled');
+		$("#TERMINAL_PLAYER_ENTER_PASSWORD").attr('disabled','disabled');
+		$("#TERMINAL_PLAYER_ENTER_PASSWORD").addClass('disabled');
+	}
+}
+function checkIfEnterPasswordAllowed(){
+	if($("#TERMINAL_PLAYER_KEY_EXIT").is('select')){
+		$("#TERMINAL_PLAYER_ENTER_PASSWORD").removeAttr('disabled');
+		$("#TERMINAL_PLAYER_ENTER_PASSWORD").removeClass('disabled');
+	}else{
+		$("#TERMINAL_PLAYER_ENTER_PASSWORD").attr('disabled','disabled');
+		$("#TERMINAL_PLAYER_ENTER_PASSWORD").addClass('disabled');
+		$("#TERMINAL_PLAYER_ENTER_PASSWORD").val("0");
+	}
+}
+$(document).ready(function() {
+	changeTerminalType();
+	checkIfEnterPasswordAllowed();
+	$("#TERMINAL_PLAYER_KEY_EXIT").change(function(){
+		checkIfEnterPasswordAllowed();
+	});
+	$("#TERMINAL_TYPE").change(function(){
+		changeTerminalType();
+	});
+	if(!$("#TERMINAL_PLAYER_CURRENCY").is('select')){
+		var cur_val = $("#TERMINAL_PLAYER_CURRENCY_HID").val();
+		$("#element-val").text(cur_val);
+	}
+	$("#TERMINAL_PLAYER_CURRENCY").change(function(){
+		$("#TERMINAL_PLAYER_CURRENCY_HID").val($("#TERMINAL_PLAYER_CURRENCY").val());
+	});
+	$("#TERMINAL_PLAYER_NAME").focus();
+	//$("#TERMINAL_PLAYER_ACCESS_CODE").mask("999999?999");
+	//$("#TERMINAL_PLAYER_CONFIRMATION_ACCESS_CODE").mask("999999?999");
+});
+</script>
+
+<form role="form" class="form-horizontal row-border" action="<?php echo $this->escape($this->element->getAction()); ?>"
+	method="<?php echo $this->escape($this->element->getMethod()); ?>">
+   <div class="container pull-left">
+
+       <?php if(isset($this->element->TERMINAL_PLAYER_LOCATION)){?>
+        <div class="row">
+            <div class="col-md-5 col-xs-12">
+                <?php echo $this->element->TERMINAL_PLAYER_LOCATION; ?>
+            </div>
+        </div>
+       <?php } ?>
+
+        <div class="row">
+            <div class="col-md-5 col-xs-12">
+                <?php echo $this->element->TERMINAL_PLAYER_NAME; ?>
+            </div>
+            <div class="col-md-offset-1 col-md-5 col-xs-12">
+                <?php echo $this->element->TERMINAL_TYPE; ?>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-5 col-xs-12">
+            </div>
+            <div class="col-md-offset-1 col-md-5 col-xs-12">
+                <?php echo $this->element->TERMINAL_PLAYER_KEY_EXIT; ?>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-5 col-xs-12">
+                <?php echo $this->element->TERMINAL_PLAYER_ENTER_PASSWORD; ?>
+
+            </div>
+            <div class="col-md-offset-1 col-md-5 col-xs-12">
+                <?php echo $this->element->TERMINAL_PLAYER_CURRENCY; ?>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-5 col-xs-12">
+                <?php echo $this->element->TERMINAL_PLAYER_BANNED; ?>
+            </div>
+            <div class="col-md-offset-1 col-md-5 col-xs-12">
+                <?php echo $this->element->TERMINAL_PLAYER_ACCESS_CODE; ?>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-5 col-xs-12">
+                <?php echo $this->element->TERMINAL_PLAYER_CONFIRMATION_ACCESS_CODE; ?>
+            </div>
+            <div class="col-md-offset-1 col-md-5 col-xs-12">
+                <?php echo $this->element->TERMINAL_PLAYER_PIN_CODE; ?>
+            </div>
+        </div>
+
+       <div class="row">
+           <div class="col-xs-12">
+               <strong>
+                   <?php echo $translate->_('Terminal type General purpose is not possible to change'); ?>
+               </strong>
+           </div>
+       </div>
+
+       <div class="row">
+           <div class="col-xs-6 col-sm-4 col-md-3">
+               <?php echo $this->element->SAVE; ?>
+           </div>
+           <div class="col-xs-6 col-sm-4 col-md-3">
+               <?php echo $this->element->CANCEL; ?>
+           </div>
+       </div>
+
+       <div class="row invincible">
+            <div class="hidden-elements">
+                <?php
+                echo $this->element->TERMINAL_PLAYER_TYPE;
+                echo $this->element->TERMINAL_TYPE_HIDDEN;
+                echo $this->element->KEY_EXIT_HIDDEN;
+                echo $this->element->ENTER_PASSWORD_HIDDEN;
+                echo $this->element->BANNED_HIDDEN;
+                echo $this->element->ACCESS_CODE_HIDDEN;
+                ?>
+            </div>
+       </div>
+
+   </div>
+
+</form>

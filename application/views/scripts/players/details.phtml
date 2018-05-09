@@ -1,0 +1,272 @@
+<?php
+$translate = Zend_Registry::get("translate");
+$lang = Zend_Registry::get("lang");
+$title = $translate->_("PlayerDetails");
+$this->title = $title;
+$this->headTitle($title);
+require_once HELPERS_DIR . DS . 'ApplicationConstants.php';
+require_once HELPERS_DIR . DS . 'RoleHelper.php';
+?>
+
+<!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <section class="content-header">
+        <span>
+            <a href="<?php echo $this->url(array('lang'=>$lang, 'controller'=>'mobile-menu', 'action'=>'players'), null, true);?>" class="btn btn-warning btn-lg pull-right">
+                <?php echo $translate->_("Back"); ?>
+            </a>
+            <br /><br />
+        </span>
+    </section>
+
+    <section class="content-header">
+        <h1>
+            <?php
+                echo $title;
+            ?>
+        </h1>
+
+        <ol class="breadcrumb">
+            <li>
+                <i class="fa fa-home"></i>
+                <a href="<?php echo $this->url(array('lang'=>$lang, 'controller'=>'players', 'action'=>'list-players'), null, true);?>" title="<?php echo $translate->_("Players"); ?>">
+                    <?php echo $translate->_("Players"); ?>
+                </a>
+            </li>
+            <li class="active">
+                <a href="<?php echo $this->url(array('lang'=>$lang, 'controller'=>'players', 'action'=>'details', 'player_id'=>$this->details['player_id']));?>" title="<?php echo $translate->_("ViewDetails"); ?>">
+                    <?php echo $title; ?>
+                </a>
+            </li>
+            <li class="bold-text"><?php echo $this->details['user_name']; ?></li>
+        </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <!-- Default box -->
+      <div class="box box-default">
+        <div class="box-body">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="pull-left">
+                        <?php //require_once ('layout/players_menu.phtml'); ?>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    &nbsp;
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-6 col-md-4">
+                    <div class="widget box">
+                        <div class="widget-header">
+                            <h4><i class="fa fa-user"></i> <?php echo $translate->_("Personal Details"); ?></h4>
+                            <div class="pull-right">
+
+                            </div>
+                        </div>
+                        <div class="widget-content">
+                            <table class="table table-striped table-bordered table-highlight-head">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <span class="bold-text">
+                                            <?php echo $translate->_("Player Name"); ?>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span class="bold-text" style="color: #CC0000; font-size: 16px;">
+                                                <?php echo $this->details['user_name']; ?>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><?php echo $translate->_("First Name"); ?></td>
+                                        <td><?php echo $this->details['first_name']; ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td><?php echo $translate->_("Last Name"); ?></td>
+                                        <td><?php echo $this->details['last_name']; ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td><?php echo $translate->_("Email"); ?></td>
+                                        <td>
+                                            <?php echo $this->details['email']; ?>
+                                            <?php if(strlen($this->details['email']) != 0){ ?>
+                                            <a href="mailto:<?php echo $this->details['email']; ?>" class="btn btn-default">
+                                                <i class="fa fa-envelope"></i>
+                                            </a>
+                                            <?php } ?>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><?php echo $translate->_("Birthday"); ?></td>
+                                        <td><?php echo $this->details['birthday']; ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td><?php echo $translate->_("Country"); ?></td>
+                                        <td><?php echo $this->details['country_name']; ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td><?php echo $translate->_("City"); ?></td>
+                                        <td><?php echo $this->details['city']; ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td><?php echo $translate->_("Zip"); ?></td>
+                                        <td><?php echo $this->details['zip_code']; ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td><?php echo $translate->_("Address"); ?></td>
+                                        <td><?php echo $this->details['address']; ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td><?php echo $translate->_("Phone"); ?></td>
+                                        <td><?php echo $this->details['phone']; ?></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-4">
+                    <div class="widget box">
+                        <div class="widget-header">
+                            <h4><i class="fa fa-wrench"></i> <?php echo $translate->_("Details"); ?></h4>
+                            <span class="pull-right">
+                                <?php if($this->details['banned'] == YES){ ?>
+                                    <a href="<?php echo $this->url(array('lang'=>$lang, 'controller'=>'players', 'action'=>'player-status', 'player_id'=>$this->details['player_id']));?>">
+                                        <button class="btn btn-sm btn-success"><?php echo $translate->_("Unban"); ?></button>
+                                    </a>
+                                <?php }else{ ?>
+                                    <a href="<?php echo $this->url(array('lang'=>$lang, 'controller'=>'players', 'action'=>'player-status', 'player_id'=>$this->details['player_id']));?>">
+                                        <button class="btn btn-sm btn-danger"><?php echo $translate->_("Ban"); ?></button>
+                                    </a>
+                                <?php } ?>
+
+                                <a href="<?php echo $this->url(array('lang'=>$lang, 'controller'=>'players', 'action'=>'update', 'player_id'=>$this->details['player_id']));?>">
+                                    <button class="btn btn-sm btn-info"><?php echo $translate->_("Update"); ?></button>
+                                </a>
+                                <a href="<?php echo $this->url(array('lang'=>$lang, 'controller'=>'players', 'action'=>'reset-password', 'player_id'=>$this->details['player_id']));?>">
+                                    <button class="btn btn-sm btn-info"><?php echo $translate->_("Reset Password"); ?></button>
+                                </a>
+                            </span>
+                        </div>
+                        <div class="widget-content">
+                            <table class="table table-striped table-bordered table-highlight-head">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <span class="bold-text">
+                                            <?php echo $translate->_("Player Balance"); ?>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span class="bold-text" style="color: #CC0000; font-size: 16px;">
+                                                <?php echo NumberHelper::format_double($this->details['credit_status']); ?>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <span class="bold-text">
+                                            <?php echo $translate->_("Currency"); ?>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span class="bold-text">
+                                                <?php echo $this->details['currency']; ?>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><?php echo $translate->_("Banned"); ?></td>
+                                        <td>
+                                            <?php if($this->details['banned'] == YES){ ?>
+                                                <span class="label label-danger"><?php echo $translate->_("Yes"); ?></span>
+                                            <?php }else{ ?>
+                                                <span class="label label-success"><?php echo $translate->_("No"); ?></span>
+                                            <?php } ?>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><?php echo $translate->_("Role"); ?></td>
+                                        <td><?php echo $this->details['rola']; ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td><?php echo $translate->_("Super Role"); ?></td>
+                                        <td><?php echo $this->details['super_rola']; ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td><?php echo $translate->_("Player_Path"); ?></td>
+                                        <td><?php echo $this->details['path']; ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td><?php echo $translate->_("Last login (date)"); ?></td>
+                                        <td><?php echo $this->details['last_login_date']; ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td><?php echo $translate->_("Last login (IP / Country)"); ?></td>
+                                        <td><?php echo $this->details['ip_address']; ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td><?php echo $translate->_("Created by"); ?></td>
+                                        <td><?php echo $this->details['created_by']; ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td><?php echo $translate->_("Created (Date)"); ?></td>
+                                        <td><?php echo $this->details['creation_date']; ?></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-md-4">
+                    <div class="widget box">
+                        <div class="widget-header">
+                            <h4><i class="fa fa-bar-chart"></i> <?php echo $translate->_("Summary"); ?></h4>
+                        </div>
+                        <div class="widget-content table-responsive">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <td colspan="2">
+                                            <?php echo $this->formSummaryReport; ?>
+                                        </td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php
+                                        foreach($this->summary_report as $rep) {
+                                    ?>
+                                        <tr <?php if(strlen($rep['value']) == 0)echo "class='bg-light-blue-active color-palette'";?>>
+                                            <td>
+                                                <span class="bold-text">
+                                                <?php echo $rep['name']; ?>
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span class="bold-text pull-right">
+                                                    <?php echo $rep['value']; ?>
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    <?php } ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <!-- /.box-body -->
+      </div>
+      <!-- /.box -->
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->

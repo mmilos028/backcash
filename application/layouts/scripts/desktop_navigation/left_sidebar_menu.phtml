@@ -1,0 +1,346 @@
+<?php
+$translate = Zend_Registry::get('translate');
+$lang = Zend_Registry::get('lang');
+$username = $_SESSION['auth_space']['session']['username'];
+$subject_type = $_SESSION['auth_space']['session']['subject_super_type_name'];
+$rola = $_SESSION['auth_space']['session']['subject_type_name'];
+$config = Zend_Registry::get('config');
+$section_name = $config->getSectionName();
+//role constants
+require_once HELPERS_DIR . DS . 'ApplicationConstants.php';
+$shift_status = NO; //shift for ShiftCashierS has not started
+$shift_start_time = "";
+if($rola == ROLA_AD_SHIFT_CASHIER_S || $rola == ROLA_AD_SHIFT_CASHIER_W){
+	require_once MODELS_DIR . DS . 'CashiersCollectorsModel.php';
+	$session_id = $_SESSION['auth_space']['session']['session_out'];
+	$arrCheckShift = CashiersCollectorsModel::checkOpenShifts($session_id);
+	$shift_status = $arrCheckShift['shift_status'];
+	$shift_start_time = $arrCheckShift['shift_start_time'];
+}
+//check registred roles, if not registred show limited menu
+$limited_menu = true;
+if(in_array($rola, array(SUPER_ROLA_MASTER_CASINO, ROLA_AD_CASHIER, ROLA_AD_CASHIER_SUBLEVEL, ROLA_AD_CASHIER_PAYOUT, ROLA_AD_THAICASHIER, ROLA_AD_COLLECTOR,
+	ROLA_AFF_AFFILIATE, ROLA_AFF_LOCATION, ROLA_AFF_OPERATER, ROLA_ADMIN_CUSTOM, ROLA_ADMIN_CUSTOM_MINI, ROLA_AD_ADMINISTRATOR, ROLA_AD_SHIFT_CASHIER_S,
+	ROLA_AD_SHIFT_CASHIER_W, ROLA_Filijala_5_Serbia_Bgd, ROLA_AF_TEST_BRISI1, ROLA_AF_MASTER_AFFILIATE))){
+	$limited_menu = false;
+}
+
+$flag_general = false; //will not be seen
+
+if (($rola == ROLA_AD_SHIFT_CASHIER_S || $rola == ROLA_AD_SHIFT_CASHIER_W) && $shift_status == YES) {
+    $flag_general = true;
+}
+else {
+    if (($rola == ROLA_AD_SHIFT_CASHIER_S || $rola == ROLA_AD_SHIFT_CASHIER_W) && $shift_status == NO) {
+        $flag_general = false;
+    }
+}
+
+if ($rola == ROLA_ADMIN_CUSTOM_MINI) {
+    $flag_general = false;
+}
+
+if($rola == ROLA_AD_CASHIER || $rola == ROLA_AD_CASHIER_PAYOUT || $rola == ROLA_AD_CASHIER_SUBLEVEL ||
+    $rola == ROLA_AFF_AFFILIATE || $rola == ROLA_AFF_LOCATION || $rola == ROLA_AFF_OPERATER || $rola == ROLA_AD_ADMINISTRATOR)
+{
+    $flag_general = true;
+}
+
+$flag_reports = $flag_general;
+if($flag_general && in_array($rola, array(ROLA_AD_CASHIER, ROLA_AD_CASHIER_PAYOUT, ROLA_AD_CASHIER_SUBLEVEL, ROLA_AD_SHIFT_CASHIER_S, ROLA_AD_SHIFT_CASHIER_W))){
+    $flag_reports = false;
+}
+
+$flag_menu_reports = false;
+if(in_array($rola, array(ROLA_AD_CASHIER, ROLA_AD_CASHIER_PAYOUT, ROLA_AD_CASHIER_SUBLEVEL, ROLA_AD_SHIFT_CASHIER_S, ROLA_AD_SHIFT_CASHIER_W))){
+    $flag_menu_reports = false;
+}else{
+    $flag_menu_reports = true;
+}
+
+if($rola == ROLA_ADMIN_CUSTOM){
+	$flag_general = true;
+	$flag_reports = true;
+	$flag_menu_reports = true;
+}
+
+$flag_players = false;
+if($rola == ROLA_AD_CASHIER || $rola == ROLA_AD_CASHIER_PAYOUT || $rola == ROLA_AD_CASHIER_SUBLEVEL)
+{
+    $flag_players = false;
+}else{
+    $flag_players = true;
+}
+
+$flat_terminals = false;
+if($rola == ROLA_AD_CASHIER || $rola == ROLA_AD_CASHIER_PAYOUT || $rola == ROLA_AD_CASHIER_SUBLEVEL)
+{
+    $flag_terminals = false;
+}else{
+    $flag_terminals = true;
+}
+
+$flag_cashier_reports = false;
+if($rola == ROLA_AD_CASHIER || $rola == ROLA_AD_CASHIER_PAYOUT || $rola == ROLA_AD_CASHIER_SUBLEVEL)
+{
+    $flag_cashier_reports = true;
+}else{
+    $flag_cashier_reports = false;
+}
+
+$controller_name = Zend_Controller_Front::getInstance()->getRequest()->getControllerName();
+$action_name = Zend_Controller_Front::getInstance()->getRequest()->getActionName();
+?>
+<!-- Left side column. contains the sidebar -->
+  <aside class="main-sidebar">
+    <!-- sidebar: style can be found in sidebar.less -->
+        <section class="sidebar">
+          <!-- sidebar menu: : style can be found in sidebar.less -->
+          <ul class="sidebar-menu" data-widget="tree">
+            <li>
+                <a href="<?php echo $this->url(array('lang'=>$lang,'controller'=>'auth', 'action'=>'logout'), null, true);?>"><i class="fa fa-sign-out"></i> <span><?php echo $translate->_('Logout'); ?></span></a>
+            </li>
+            <?php if($limited_menu == false){ ?>
+            <li class="header"><?php echo $translate->_('MAIN NAVIGATION'); ?></li>
+            <li>
+                <a href="<?php echo $this->url(array('lang'=>$lang, 'controller'=>'mobile-menu', 'action'=>'index'), null, true);?>">
+                    <i class="fa fa-bars"></i>
+                    <span><?php echo $translate->_('Main Menu'); ?></span>
+                </a>
+            </li>
+            <?php if($rola == ROLA_AD_SHIFT_CASHIER_S || $rola == ROLA_AD_SHIFT_CASHIER_W){?>
+                <?php if(($rola == ROLA_AD_SHIFT_CASHIER_S || $rola == ROLA_AD_SHIFT_CASHIER_W) && $shift_status == NO){?>
+                    <li>
+                        <a href="<?php echo $this->url(array('lang'=>$lang, 'controller'=>'cashiers-collectors', 'action'=>'start-shift'), null, true);?>"><?php echo $translate->_('Start Shift'); ?></a>
+                    </li>
+                <?php }?>
+                <?php if(($rola == ROLA_AD_SHIFT_CASHIER_S || $rola == ROLA_AD_SHIFT_CASHIER_W) && $shift_status == YES){?>
+                    <li>
+                        <a href="<?php echo $this->url(array('lang'=>$lang, 'controller'=>'cashiers-collectors', 'action'=>'end-shift'), null, true);?>"><?php echo $translate->_('End Shift'); ?></a>
+                    </li>
+                <?php } ?>
+            <?php } ?>
+
+            <?php if($limited_menu == false){ ?>
+
+                <?php if($flag_general){ ?>
+                    <?php if($rola != ROLA_AD_CASHIER_PAYOUT) { ?>
+                <li>
+                    <a href="<?php echo $this->url(array('lang'=>$lang, 'controller'=>'financial-transaction', 'action'=>'deposit-list'), null, true);?>">
+                        <i class="fa fa-money"></i>
+                        <span><?php echo $translate->_('Deposit'); ?></span>
+                    </a>
+                </li>
+                <?php
+                    }
+                }
+                ?>
+
+                <?php if($flag_general){ ?>
+                <li>
+                    <a href="<?php echo $this->url(array('lang'=>$lang, 'controller'=>'financial-transaction', 'action'=>'withdraw-list'), null, true);?>">
+                        <i class="fa fa-money"></i>
+                        <span><?php echo $translate->_('Withdraw'); ?></span>
+                    </a>
+                </li>
+                <?php } ?>
+
+                <?php if($flag_terminals){ ?>
+                <li class="treeview<?php if(strpos($controller_name, "terminal-players") === 0) echo " active"; ?>">
+                    <a href="#" class="noblockui">
+                        <i class="fa ion-android-desktop"></i> <span><?php echo $translate->_('Terminal Players'); ?></span>
+                        <span class="pull-right-container">
+                          <i class="fa fa-angle-left pull-right"></i>
+                        </span>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li>
+                            <a href="<?php echo $this->url(array('lang'=>$lang,'controller'=>'terminal-players', 'action'=>'search'), null, true);?>">
+                                <i class="fa ion-search"></i>
+                                <span><?php echo $translate->_('Search'); ?></span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="<?php echo $this->url(array('lang'=>$lang,'controller'=>'terminal-players', 'action'=>'list-players'), null, true);?>">
+                                <i class="fa ion-ios-list-outline"></i>
+                                <span><?php echo $translate->_('List'); ?></span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <?php } ?>
+
+                <?php if($flag_players){ ?>
+                <li class="treeview<?php if(strpos($controller_name, "players") === 0) echo " active"; ?>">
+                    <a href="#" class="noblockui">
+                        <i class="fa ion-person"></i> <span><?php echo $translate->_('Players'); ?></span>
+                        <span class="pull-right-container">
+                          <i class="fa fa-angle-left pull-right"></i>
+                        </span>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li>
+                            <a href="<?php echo $this->url(array('lang'=>$lang,'controller'=>'players', 'action'=>'search'), null, true);?>">
+                                <i class="fa ion-search"></i>
+                                <span><?php echo $translate->_('Search'); ?></span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="<?php echo $this->url(array('lang'=>$lang,'controller'=>'players', 'action'=>'list-players'), null, true);?>">
+                                <i class="fa ion-ios-list-outline"></i>
+                                <span><?php echo $translate->_('List'); ?></span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="<?php echo $this->url(array('lang'=>$lang,'controller'=>'players', 'action'=>'new-player'), null, true);?>">
+                                <i class="fa ion-plus-round"></i>
+                                <span><?php echo $translate->_('New Player'); ?></span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <?php } ?>
+            <?php } ?>
+
+            <?php if($flag_general){ ?>
+            <?php if($flag_menu_reports){ ?>
+                <li class="treeview<?php if(strpos($controller_name, "cashier-reports") === 0) echo " active"; ?>">
+                    <a href="#" class="noblockui">
+                        <i class="fa ion-stats-bars"></i> <span><?php echo $translate->_('Reports'); ?></span>
+                        <span class="pull-right-container">
+                          <i class="fa fa-angle-left pull-right"></i>
+                        </span>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li>
+                            <a href="<?php echo $this->url(array('lang'=>$lang,'controller'=>'cashier-reports', 'action'=>'my-history-min'), null, true);?>">
+                                <i class="fa ion-stats-bars"></i>
+                                <span><?php echo $translate->_('My History'); ?></span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="<?php echo $this->url(array('lang'=>$lang,'controller'=>'cashier-reports', 'action'=>'player-history-min'), null, true);?>">
+                                <i class="fa ion-stats-bars"></i>
+                                <span><?php echo $translate->_('Player History'); ?></span>
+                            </a>
+                        </li>
+                        <?php
+                        if($flag_reports){
+                        ?>
+                        <li>
+                            <a href="<?php echo $this->url(array('lang'=>$lang,'controller'=>'cashier-reports', 'action'=>'cash-report'), null, true);?>">
+                                <i class="fa ion-stats-bars"></i>
+                                <span><?php echo $translate->_('Cash Report'); ?></span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="<?php echo $this->url(array('lang'=>$lang,'controller'=>'cashier-reports', 'action'=>'cash-report-daily'), null, true);?>">
+                                <i class="fa ion-stats-bars"></i>
+                                <span><?php echo $translate->_('Cash Report Daily'); ?></span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="<?php echo $this->url(array('lang'=>$lang,'controller'=>'cashier-reports', 'action'=>'credit-report'), null, true);?>">
+                                <i class="fa ion-stats-bars"></i>
+                                <span><?php echo $translate->_('Credit Report'); ?></span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="<?php echo $this->url(array('lang'=>$lang,'controller'=>'cashier-reports', 'action'=>'credit-report-daily'), null, true);?>">
+                                <i class="fa ion-stats-bars"></i>
+                                <span><?php echo $translate->_('Credit Report Daily'); ?></span>
+                            </a>
+                        </li>
+                        <?php } ?>
+                    </ul>
+                </li>
+            <?php } ?>
+            <?php } ?>
+
+            <?php if($flag_general){ ?>
+            <?php if($flag_cashier_reports){ ?>
+                <li>
+                    <a href="<?php echo $this->url(array('lang'=>$lang,'controller'=>'cashier-reports', 'action'=>'cashier-history'), null, true);?>">
+                        <i class="fa ion-stats-bars"></i> <span><?php echo $translate->_('Transaction History'); ?></span>
+                    </a>
+                </li>
+            <?php } ?>
+            <?php } ?>
+
+
+            <?php } ?>
+            <li class="treeview">
+              <a href="#" class="noblockui">
+                <i class="fa ion-earth"></i> <span><?php echo $translate->_('Language'); ?></span>
+                <span class="pull-right-container">
+                  <i class="fa fa-angle-left pull-right"></i>
+                </span>
+              </a>
+              <ul class="treeview-menu">
+                <li>
+                    <a href="<?php echo $this->url(array('lang'=>'en')); ?>" title="English">
+                        <img height="18" width="18" class="<?php if($lang == "en")echo 'langswitch-active-language'; else echo 'langswitch-inactive-language'; ?>" alt="English" src="<?php echo $this->baseUrl() . '/images/uk.png'?>" />
+                        English
+                    </a>
+                </li>
+                <li>
+                    <a href="<?php echo $this->url(array('lang'=>'de')); ?>" title="Deutsch">
+                        <img height="18" width="18" class="<?php if($lang == "de")echo 'langswitch-active-language'; else echo 'langswitch-inactive-language'; ?>" alt="Deutsch" src="<?php echo $this->baseUrl() . '/images/germany.png'?>" />
+                        Deutsch
+                    </a>
+                </li>
+                <li>
+                    <a href="<?php echo $this->url(array('lang'=>'se')); ?>" title="Svenska">
+                        <img height="18" width="18" class="<?php if($lang == "se")echo 'langswitch-active-language'; else echo 'langswitch-inactive-language'; ?>" alt="Svenska" src="<?php echo $this->baseUrl() . '/images/sweden.png'?>" />
+                        Svenska
+                    </a>
+                </li>
+                <li>
+                    <a href="<?php echo $this->url(array('lang'=>'da')); ?>" title="Danske">
+                        <img height="18" width="18" class="<?php if($lang == "da")echo 'langswitch-active-language'; else echo 'langswitch-inactive-language'; ?>" alt="Danske" src="<?php echo $this->baseUrl() . '/images/denmark.png'?>" />
+                        Danske
+                    </a>
+                </li>
+                <li>
+                    <a href="<?php echo $this->url(array('lang'=>'it')); ?>" title="Italiano">
+                        <img height="18" width="18" class="<?php if($lang == "it")echo 'langswitch-active-language'; else echo 'langswitch-inactive-language'; ?>" alt="Italiano" src="<?php echo $this->baseUrl() . '/images/italy.png'?>" />
+                        Italiano
+                    </a>
+                </li>
+                <li>
+                    <a href="<?php echo $this->url(array('lang'=>'ru')); ?>" title="Русский">
+                        <img height="18" width="18" class="<?php if($lang == "ru")echo 'langswitch-active-language'; else echo 'langswitch-inactive-language'; ?>" alt="Русский" src="<?php echo $this->baseUrl() . '/images/russia.png'?>" />
+                        Русский
+                    </a>
+                </li>
+                <li>
+                    <a href="<?php echo $this->url(array('lang'=>'pl')); ?>" title="Polski">
+                        <img height="18" width="18" class="<?php if($lang == "pl")echo 'langswitch-active-language'; else echo 'langswitch-inactive-language'; ?>" alt="Polski" src="<?php echo $this->baseUrl() . '/images/poland.png'?>" />
+                        Polski
+                    </a>
+                </li>
+                <li>
+                    <a href="<?php echo $this->url(array('lang'=>'cs')); ?>" title="Český">
+                        <img height="18" width="18" class="<?php if($lang == "cs")echo 'langswitch-active-language'; else echo 'langswitch-inactive-language'; ?>" alt="Český" src="<?php echo $this->baseUrl() . '/images/czech.png'?>" />
+                        Český
+                    </a>
+                </li>
+                <li>
+                    <a href="<?php echo $this->url(array('lang'=>'hr')); ?>" title="Hrvatski">
+                        <img height="18" width="18" class="<?php if($lang == "hr")echo 'langswitch-active-language'; else echo 'langswitch-inactive-language'; ?>" alt="Hrvatski" src="<?php echo $this->baseUrl() . '/images/croatia.png'?>" />
+                        Hrvatski
+                    </a>
+                </li>
+                <li>
+                    <a href="<?php echo $this->url(array('lang'=>'rs')); ?>" title="Srpski">
+                        <img height="18" width="18" class="<?php if($lang == "rs")echo 'langswitch-active-language'; else echo 'langswitch-inactive-language'; ?>" alt="Srpski" src="<?php echo $this->baseUrl() . '/images/serbia.png'?>" />
+                        Srpski
+                    </a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </section>
+    <!-- /.sidebar -->
+  </aside>
+<div class="control-sidebar-bg"></div>

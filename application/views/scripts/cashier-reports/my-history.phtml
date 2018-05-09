@@ -1,0 +1,115 @@
+<?php
+$translate = Zend_Registry::get("translate");
+$lang = Zend_Registry::get("lang");
+$title = $translate->_("My History");
+$this->title = $title;
+$this->headTitle($title);
+require_once HELPERS_DIR . DS . 'ApplicationConstants.php';
+require_once HELPERS_DIR . DS . 'RoleHelper.php';
+require_once HELPERS_DIR . DS . 'NumberHelper.php';
+require_once HELPERS_DIR . DS . 'StringHelper.php';
+?>
+<!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <section class="content-header">
+        <span>
+        <a onClick="goBackAction()" class="btn btn-warning btn-lg pull-right">
+            <?php echo $translate->_("Back"); ?>
+        </a>
+            <br /><br />
+        </span>
+    </section>
+    <section class="content-header">
+        <h1>
+            <?php
+                echo $title;
+            ?>
+        </h1>
+        <ol class="breadcrumb">
+            <li>
+                <i class="fa fa-home"></i>
+                <?php echo $translate->_("Reports"); ?>
+            </li>
+            <li class="active">
+                <a href="<?php echo $this->url(array('lang'=>$lang, 'controller'=>'cashier-reports', 'action'=>'my-history'));?>" title="<?php echo $title; ?>">
+                    <?php echo $title; ?>
+                </a>
+            </li>
+        </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <!-- Default box -->
+      <div class="box box-default">
+        <div class="box-body">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="form-group">
+                        <?php echo $this->form; ?>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 table-responsive">
+                    <table id="table" class="table table-bordered table-hover table-striped">
+                        <thead>
+                            <tr class="bg-blue-active">
+                                <th>&nbsp;<?php echo $translate->_("Date Time"); ?>&nbsp;</th>
+                                <th>&nbsp;<?php echo $translate->_("Amount"); ?>&nbsp;</th>
+                                <th>&nbsp;<?php echo $translate->_("Currency"); ?>&nbsp;</th>
+                                <th>&nbsp;<?php echo $translate->_("Transaction Type"); ?>&nbsp;</th>
+                                <th>&nbsp;<?php echo $translate->_("Commited By"); ?>&nbsp;</th>
+                                <th>&nbsp;<?php echo $translate->_("Name From"); ?>&nbsp;</th>
+                                <th>&nbsp;<?php echo $translate->_("Name To"); ?>&nbsp;</th>
+                                <!---
+                                <th>&nbsp;<?php echo $translate->_("IP / Country / City"); ?>&nbsp;</th>
+                                --->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                                foreach($this->paginator as $data) {
+                            ?>
+                                <tr class="<?php if($data['amount_sign'] == -1)echo "red-text"; ?>">
+                                    <td title="<?php echo $translate->_("Date Time"); ?>">
+                                            <?php echo $data['date_time']; ?>
+                                    </td>
+                                    <td title="<?php echo $translate->_("Amount"); ?>" class="right-text-align bold-text">
+                                        <?php echo NumberHelper::format_double($data['amount']); ?>
+                                    </td>
+                                    <td title="<?php echo $translate->_("Currency"); ?>" class="align-center bold-text">
+                                        <?php echo $data['currency']; ?>
+                                    </td>
+                                    <td title="<?php echo $translate->_("Transaction Type"); ?>">
+                                        <?php echo $translate->_($data['transaction_type']); ?>
+                                    </td>
+                                    <td title="<?php echo $translate->_("Commited By"); ?>">
+                                        <?php echo $data['commited_by']; ?>
+                                    </td>
+                                    <td title="<?php echo $translate->_("Name From"); ?>">
+                                        <?php echo $data['name_from']; ?>
+                                    </td>
+                                    <td title="<?php echo $translate->_("Name To"); ?>">
+                                        <?php echo $data['name_to']; ?>
+                                    </td>
+                                    <!--
+                                    <td title="<?php echo $translate->_("IP / Country / City"); ?>">
+                                        <?php echo StringHelper::filterCountry($data['ip_country']); ?>
+                                    </td>
+                                    -->
+                                </tr>
+                            <?php } ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+        <!-- /.box-body -->
+      </div>
+      <!-- /.box -->
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->

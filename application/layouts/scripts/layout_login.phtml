@@ -1,0 +1,91 @@
+<?php
+$translate = Zend_Registry::get("translate");
+$lang = Zend_Registry::get("lang");
+$config = Zend_Registry::get('config');
+$locale = Zend_Registry::get("localeString");
+require_once HELPERS_DIR . DS . 'mobile_detect' . DS . 'Mobile_Detect.php';
+?>
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title><?php echo $translate->_("General Title"); ?></title>
+  <!-- Tell the browser to be responsive to screen width -->
+  <?php
+    $box_type = "mobile-login-box";
+    $helperMobileDetect = new Mobile_Detect();
+        if($helperMobileDetect->isTablet()){
+            //if detected mobile or tablet
+            $box_type = "mobile-login-box";
+  ?>
+        <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <?php
+        }
+        else if($helperMobileDetect->isMobile()){
+            $box_type = "mobile-login-box";
+  ?>
+        <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <?php
+        }
+        else {
+            //if detected desktop
+            $box_type = "login-box";
+  ?>
+        <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <?php
+        }
+  ?>
+
+  <?php
+    $this->headLink()
+        //Bootstrap 3.3.6
+        ->appendStylesheet($this->baseUrl() . '/js/adminlte/bootstrap/css/bootstrap.min.css')
+        //Font Awesome
+        ->appendStylesheet($this->baseUrl() . '/css/font-awesome/css/font-awesome.min.css')
+        //Ionicons
+        ->appendStylesheet($this->baseUrl() . '/css/ionicons/css/ionicons.min.css')
+        //theme style
+        ->appendStylesheet($this->baseUrl() . '/js/adminlte/dist/css/AdminLTE.min.css')
+        //icheck
+        ->appendStylesheet($this->baseUrl() . '/js/adminlte/plugins/iCheck/square/blue.css')
+    ;
+    echo $this->headLink();
+    $this->headScript()
+        ->appendFile($this->baseUrl().'/js/adminlte/js/html5shiv.min.js', 'text/javascript', array('conditional' => 'lt IE 9'))
+        ->appendFile($this->baseUrl().'/js/adminlte/js/respond.min.js', 'text/javascript', array('conditional' => 'lt IE 9'))
+        //jQuery 2.2.3
+        ->appendFile($this->baseUrl().'/js/adminlte/plugins/jQuery/jquery-2.2.3.min.js', 'text/javascript')
+        //Bootstrap 3.3.6
+        ->appendFile($this->baseUrl().'/js/adminlte/bootstrap/js/bootstrap.min.js', 'text/javascript')
+    ;
+    echo $this->headScript();
+  ?>
+  <link rel="shortcut icon" type="image/x-icon" href="<?php echo $this->baseUrl() . '/images/favicon.ico'; ?>" />
+</head>
+<body class="hold-transition login-page" oncontextmenu="return false;">
+<?php
+	if($config->getSectionName() == "www.setupme.com"){
+?>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-61958155-3', 'auto');
+  ga('send', 'pageview');
+</script>
+<?php } ?>
+
+<div class="<?php echo $box_type; ?>">
+  <div class="login-logo">
+    <b>Partner</b> Network
+  </div>
+  <!-- /.login-logo -->
+
+  <?php echo $this->layout()->content; ?>
+</div>
+<!-- /.login-box -->
+
+</body>
+</html>

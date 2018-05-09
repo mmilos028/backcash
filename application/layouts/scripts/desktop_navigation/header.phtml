@@ -1,0 +1,35 @@
+<?php
+$translate = Zend_Registry::get("translate");
+$lang = Zend_Registry::get("lang");
+$config = Zend_Registry::get('config');
+$section_name = $config->getSectionName();
+$bo_session_id = $_SESSION['auth_space']['session']['session_out'];
+$username = $_SESSION['auth_space']['session']['username'];
+$super_role = $_SESSION['auth_space']['session']['subject_super_type_name'];
+$role = $_SESSION['auth_space']['session']['subject_type_name'];
+?>
+<header class="main-header">
+    <!-- Logo -->
+    <a href="#" class="logo noblockui">
+      <!-- mini logo for sidebar mini 50x50 pixels -->
+      <span class="logo-mini"><b>P</b>N</span>
+      <!-- logo for regular state and mobile devices -->
+      <span class="logo-lg"><b>Partner</b> Network</span>
+    </a>
+    <!-- Header Navbar: style can be found in header.less -->
+    <nav class="navbar navbar-static-top">
+      <!-- Sidebar toggle button-->
+      <a href="#" class="sidebar-toggle noblockui" data-toggle="push-menu" role="button">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </a>
+
+      <div class="navbar-custom-menu center-block">
+        <ul class="nav navbar-nav">
+
+        </ul>
+      </div>
+    </nav>
+</header>

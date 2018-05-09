@@ -1,0 +1,61 @@
+<?php 
+$translate = Zend_Registry::get("translate");
+$this->headScript()
+->appendFile($this->baseUrl() . '/js/tinymce/tinymce.min.js');
+echo $this->headScript();
+?>
+<script type="text/javascript">
+tinyMCE.init({
+        // General options
+        mode : "textareas",
+        theme : "modern",
+        skin : "lightgray",
+		plugins: [
+		"advlist autolink hr lists link charmap anchor pagebreak",
+		"searchreplace visualblocks wordcount emoticons textcolor",
+		"insertdatetime table contextmenu paste code"
+    	],
+    	toolbar: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image"
+});
+</script>
+<script type="text/javascript">
+$(document).ready(function() {
+	if($("#AMOUNT")){
+	var amountDefaultValue = $("#AMOUNT").val();	
+	$("#AMOUNT").keyup(function(){ 
+		if($("#AMOUNT").val() == ""){
+			$("#AMOUNT").val(amountDefaultValue);
+		}
+	});
+	}
+});
+</script>
+<form role="form" id="form_start_shift" action="<?php echo $this->escape($this->element->getAction()); ?>" method="<?php echo $this->escape($this->element->getMethod()); ?>">
+    <div class="container pull-left">
+        <div class="row">
+            <div class="col-xs-12">
+                <?php if(isset($this->element->AMOUNT)){ ?>
+                <?php echo $this->element->AMOUNT; ?>
+                <?php } ?>
+            </div>
+        </div>
+        <?php if(isset($this->element->COMMENT)){ ?>
+        <div class="row">
+            <div class="col-xs-12">
+                <pre><?php echo $this->element->COMMENT; ?></pre>
+            </div>
+        </div>
+        <?php } ?>
+        <div class="row">
+            <div class="col-xs-12">
+              <?php echo $this->element->SAVE; ?>
+                <div class="invincible">
+                    <?php echo $this->element->CASH_IN; ?>
+			        <?php echo $this->element->CASH_OUT; ?>
+			        <?php echo $this->element->BALANCE; ?>
+			        <?php echo $this->element->CSRF; ?>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

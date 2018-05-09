@@ -1,0 +1,20 @@
+@charset UTF-8;
+table{margin-bottom:5px}
+table.results{border-collapse:collapse;color:#000;max-width:99%;margin-bottom:0;word-wrap:break-word;border:0}
+th.results{font-size:11px;color:#FFF;background-color:#369;height:10px;text-align:center;vertical-align:middle;margin-left:5px;border:0 solid silver;word-wrap:break-word}
+td.results{font-size:11px;color:#000;vertical-align:middle;background-color:#FFF;margin-left:2px;text-indent:5px;border:1px solid silver;word-wrap:break-word;height:15px}
+.results{font-size:11px;color:#000;vertical-align:middle;background-color:#FFF;text-indent:5px;border:1px solid silver;word-wrap:break-word;height:15px}
+.highlight{font-size:11px;color:#000;vertical-align:middle;background-color:#ccc;text-indent:5px;border:1px solid silver;word-wrap:break-word;height:15px;margin:2px}
+table.leftmenu{font-size:9px;color:#FFF;border-collapse:collapse;height:50px}
+td.leftmenu{font-size:9px;color:#FFF;vertical-align:middle;text-align:left;margin-left:5px;height:9px;text-decoration:none}
+th.leftmenu{font-size:9px;color:#FFF;height:9px;text-align:left;margin-left:10px}
+a.show_leftmenu,a.hide_leftmenu{font-size:11px;color:#FFF}
+h1{font-size:24px;color:#3b5998;text-align:center;margin-bottom:0}
+h2{font-size:20px;color:#000;text-align:center;text-decoration:underline;margin-bottom:0}
+h3{font-size:20px;color:#FFF;text-align:center}
+h4{font-family:sans-serif;font-size:18px;font-weight:700;color:#000;text-align:center;text-transform:uppercase;margin:0;padding:0}
+#loadingPage{display:none;border:none;background:#000;-webkit-border-radius:10px;-moz-border-radius:10px;filter:alpha(opacity=85);-moz-opacity:0.85;-khtml-opacity:0.85;opacity:0.85;cursor:wait}
+#title,.title{font-family:sans-serif;font-size:17px;font-weight:700;color:#000;text-transform:uppercase;text-align:center;padding:5px}
+.navigation{font-size:11px;text-align:left;color:#000;vertical-align:top;width:94%;padding-left:15px;}
+a#nav:link,a#nav:visited{font-size:11px;color:#000;text-transform:none}
+a#nav:active,a#nav:hover{font-size:11px;color:red;text-transform:none}

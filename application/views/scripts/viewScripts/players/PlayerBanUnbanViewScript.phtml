@@ -1,0 +1,61 @@
+<?php
+require_once HELPERS_DIR . DS . 'ApplicationConstants.php';
+$translate = Zend_Registry::get("translate");
+$lang = Zend_Registry::get("lang");
+?>
+<script type="text/javascript">
+$(document).ready(function() {
+
+});
+</script>
+<br />
+<form action="<?php echo $this->escape($this->element->getAction()); ?>"
+	method="<?php echo $this->escape($this->element->getMethod()); ?>">
+        <div class="row">
+            <div class="col-xs-12">
+                <?php echo $this->element->NAME; ?>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-10 col-sm-6 col-md-4">
+                <?php if($this->element->STATUS->getValue() == YES) { ?>
+                    <div class="alert alert-danger">
+                        <h4><i class="icon fa fa-ban"></i> <?php echo $translate->_("Current Status"); ?></h4>
+                        <?php echo $translate->_("Banned"); ?>
+                    </div>
+                <?php }else{ ?>
+                    <div class="alert alert-success">
+                        <h4><i class="icon fa fa-check"></i> <?php echo $translate->_("Current Status"); ?></h4>
+                        <?php echo $translate->_("Not Banned"); ?>
+                    </div>
+                <?php } ?>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-10 col-sm-6 col-md-4">
+                <div class="alert alert-warning">
+                    <h4>
+                        <i class="icon fa fa-warning"></i><?php echo $translate->_("Warning"); ?>
+                    </h4>
+                    <?php echo $translate->_("Status for this affiliate will be affected with any changes."); ?>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-4 col-sm-3 col-md-2">
+                <?php if($this->element->STATUS->getValue() != YES) { ?>
+                    <?php echo $this->element->BAN; ?>
+                <?php }else{ ?>
+                    <?php echo $this->element->UNBAN; ?>
+                <?php } ?>
+            </div>
+            <div class="col-xs-4 col-sm-3 col-md-2">
+                <?php echo $this->element->CANCEL; ?>
+            </div>
+        </div>
+        <div class="row">
+            <div class="hidden-elements">
+                <?php echo $this->element->CSRF; ?>
+            </div>
+        </div>
+</form>

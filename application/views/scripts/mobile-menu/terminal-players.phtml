@@ -1,0 +1,86 @@
+<?php
+$translate = Zend_Registry::get('translate');
+$lang = Zend_Registry::get('lang');
+$username = $_SESSION['auth_space']['session']['username'];
+$subject_type = $_SESSION['auth_space']['session']['subject_super_type_name'];
+$rola = $_SESSION['auth_space']['session']['subject_type_name'];
+$config = Zend_Registry::get('config');
+$section_name = $config->getSectionName();
+//role constants
+require_once HELPERS_DIR . DS . 'ApplicationConstants.php';
+$shift_status = NO; //shift for ShiftCashierS has not started
+$shift_start_time = "";
+if($rola == ROLA_AD_SHIFT_CASHIER_S || $rola == ROLA_AD_SHIFT_CASHIER_W){
+	require_once MODELS_DIR . DS . 'CashiersCollectorsModel.php';
+	$session_id = $_SESSION['auth_space']['session']['session_out'];
+	$arrCheckShift = CashiersCollectorsModel::checkOpenShifts($session_id);
+	$shift_status = $arrCheckShift['shift_status'];
+	$shift_start_time = $arrCheckShift['shift_start_time'];
+}
+//check registred roles, if not registred show limited menu
+$limited_menu = true;
+if(in_array($rola, array(SUPER_ROLA_MASTER_CASINO, ROLA_AD_CASHIER, ROLA_AD_CASHIER_SUBLEVEL, ROLA_AD_CASHIER_PAYOUT, ROLA_AD_THAICASHIER, ROLA_AD_COLLECTOR,
+	ROLA_AFF_AFFILIATE, ROLA_AFF_LOCATION, ROLA_AFF_OPERATER, ROLA_ADMIN_CUSTOM, ROLA_ADMIN_CUSTOM_MINI, ROLA_AD_ADMINISTRATOR, ROLA_AD_SHIFT_CASHIER_S,
+	ROLA_AD_SHIFT_CASHIER_W, ROLA_Filijala_5_Serbia_Bgd, ROLA_AF_TEST_BRISI1, ROLA_AF_MASTER_AFFILIATE))){
+	$limited_menu = false;
+}
+$mobile_menu_button_css = "col-md-12 col-sm-12 col-xs-12";
+?>
+<script type="text/javascript">
+</script>
+<style>
+    .super-large-text{
+        padding-top: 15px;
+        font-size: 30px;
+    }
+    div.info-box a{
+        color: white;
+    }
+</style>
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <section class="content">
+
+            <?php
+            if ($limited_menu == false) {
+            ?>
+                <br/>
+                <!-- affiliates menu -->
+                <div class="row">
+                    <div class="<?php echo $mobile_menu_button_css; ?>">
+                        <div class="info-box bg-blue">
+                            <a href="<?php echo $this->url(array('lang' => $lang, 'controller' => 'terminal-players', 'action' => 'search'), null, true); ?>">
+                                <span class="info-box-icon bg-blue"><i class="ion ion-search"></i></span>
+                                <div class="info-box-content">
+                                    <span class="info-box-number super-large-text"><?php echo $translate->_('Search'); ?></span>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="<?php echo $mobile_menu_button_css; ?>">
+                        <div class="info-box bg-blue">
+                            <a href="<?php echo $this->url(array('lang' => $lang, 'controller' => 'terminal-players', 'action' => 'list-players'), null, true); ?>">
+                                <span class="info-box-icon bg-blue"><i class="ion ion-ios-list-outline"></i></span>
+                                <div class="info-box-content">
+                                    <span class="info-box-number super-large-text"><?php echo $translate->_('List'); ?></span>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="<?php echo $mobile_menu_button_css; ?>">
+                        <div class="info-box bg-red">
+                            <a href="<?php echo $this->url(array('lang' => $lang, 'controller' => 'mobile-menu', 'action' => 'index'), null, true); ?>">
+                                <span class="info-box-icon bg-red"><i class="ion ion-navicon-round"></i></span>
+                                <div class="info-box-content">
+                                    <span class="info-box-number super-large-text"><?php echo $translate->_('Main Menu'); ?></span>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+        <?php
+            }
+        ?>
+    </section>
+</div>

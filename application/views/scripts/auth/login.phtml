@@ -1,0 +1,70 @@
+<?php
+$translate = Zend_Registry::get("translate");
+$title = $translate->_("Login");
+$this->title = $title;
+$this->headTitle($title);
+$config = Zend_Registry::get('config');
+$currentDate = strtotime(date("Y-m-d H:i:s"));
+$startDateUpgrade = strtotime("2016-10-15 06:00:00");
+$endDateUpgrade = strtotime("2016-10-21 06:00:00");
+?>
+<script type="text/javascript">
+$(document).ready(
+	function(){
+		//check if cookies are enabled to enable using login for users
+		var cookieEnabled=(navigator.cookieEnabled)? true : false 
+		//if not IE4+ nor NS6+
+		if (typeof navigator.cookieEnabled=="undefined" && !cookieEnabled){ 
+			document.cookie="testcookie";
+			cookieEnabled=(document.cookie.indexOf("testcookie")!=-1)? true : false;
+		}
+		if (!cookieEnabled){
+			$("#cookie_error").show();
+		}else{
+			$("#cookie_error").hide();
+		}
+	}
+);
+</script>
+
+<div class="login-box-body">
+    <p class="login-box-msg">
+        <?php
+			echo $translate->_("Sign in to start your session");
+		?>
+    </p>
+    <?php if(!empty($this->message)){ ?>
+			<div class="alert alert-danger alert-dismissible fade in">
+				<?php echo $this->message; ?>
+			</div>
+		<?php } ?>
+		<div id="cookie_error" class="alert alert-danger alert-dismissible fade in" style="display: none;">
+			<?php
+			echo $translate->_("Your browser's cookie functionality is turned off. Please turn it on to proceed using this site.");
+			?>
+		</div>
+        <?php if($currentDate > $startDateUpgrade && $currentDate < $endDateUpgrade) { ?>
+        <div class="alert alert-danger alert-dismissible fade in">
+			<?php
+			echo "Note: After login refresh page by clicking F5 on your keyboard" . "<br />" . "Achtung: Bitte erneuren sie nach dem Einloggen  die Seite (Drücken sie F5)";
+			?>
+		</div>
+    <?php } ?>
+
+    <?php
+        echo $this->form;
+    ?>
+
+    <div class="social-auth-links text-center">
+      <?php if($config->getSectionName() == "www.setupme.com"){ ?>
+			<span id="siteseal">
+				<script type="text/javascript" src="https://seal.godaddy.com/getSeal?sealID=OiAC5ISmiMKTcLo1rrcaimnHWeIPpnCn5zbm6pMOVgtxZfshvGdMiMOUP7aY"></script>
+			</span>
+		<?php }else{ ?>
+			<span id="siteseal">
+			<img src="<?php echo $this->baseUrl() . '/images/siteseal_gd_3_h_l_m.gif'?>" alt="" />
+			</span>
+		<?php } ?>
+    </div>
+  </div>
+  <!-- /.login-box-body -->

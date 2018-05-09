@@ -1,0 +1,51 @@
+<?php
+$translate = Zend_Registry::get("translate");
+$lang = Zend_Registry::get("lang");
+$head_title = $translate->_("Start Shift");
+$this->title = $head_title;
+$this->headTitle($head_title);
+?>
+
+<!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-xs-12 pull-left">
+                <div class="box table-responsive">
+                    <div class="box-header">
+                        <h3 class="box-title">
+                            <?php echo $head_title; ?>
+                        </h3>
+                    </div>
+                    <div class="box-body">
+                        <?php if(!strlen($this->message)==0){ ?>
+                            <div class="alert alert-danger alert-dismissible">
+                                <h4>
+                                    <i class="icon fa fa-ban"></i><?php echo $translate->_("Alert"); ?>
+                                </h4>
+                                <?php echo $this->message; ?>
+                            </div>
+                        <?php
+                        }
+                        ?>
+                        <?php if(!strlen($this->information)==0){ ?>
+                            <div class="alert alert-info alert-dismissible">
+                                <h4>
+                                    <i class="icon fa fa-ban"></i><?php echo $translate->_("Information"); ?>
+                                </h4>
+                                <?php echo $this->information; ?>
+                            </div>
+                        <?php
+                        }
+                        ?>
+                        <?php
+                            echo $this->form;
+                        ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- row -->
+    </section>
+</div>

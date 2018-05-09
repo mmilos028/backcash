@@ -1,0 +1,19 @@
+<?php
+    $translate = Zend_Registry::get('translate');
+    $config = Zend_Registry::get('config');
+?>
+<footer class="main-footer">
+    <div class="container">
+        <strong>
+            <?php echo $translate->_("Optimized message"); ?>
+        </strong>
+        <div class="pull-right hidden-sm hidden-xs">
+          Partner Network &copy; <?php echo date('Y'); ?>
+        </div>
+        <?php if(strlen($config->backofficeDesktopApplicationLink) != 0) { ?>
+        <div class="pull-right hidden-md hidden-lg hidden-xl">
+            <a href="<?php echo $config->backofficeDesktopApplicationLink; ?>"><?php echo $translate->_("Desktop here"); ?></a>
+        </div>
+        <?php } ?>
+    </div>
+</footer>

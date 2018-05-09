@@ -1,0 +1,80 @@
+<?php
+$translate = Zend_Registry::get("translate");
+$lang = Zend_Registry::get("lang");
+$title = $translate->_("Update Terminal Player");
+$this->title = $title;
+$this->headTitle($title);
+?>
+
+<!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <section class="content-header">
+            <span>
+                <a href="<?php echo $this->url(array('lang'=>$lang, 'controller'=>'terminal-players', 'action'=>'details', 'player_id'=>$this->player_id),null,true);?>" class="btn btn-warning btn-lg pull-right">
+                    <?php echo $translate->_("Back"); ?>
+                </a>
+                <br /><br />
+            </span>
+        </section>
+        <section class="content-header">
+            <h1>
+                &nbsp;
+            </h1>
+            <ol class="breadcrumb">
+                <li><i class="fa fa-home"></i>
+                    <a href="<?php echo $this->url(array('lang'=>$lang, 'controller'=>'terminal-players', 'action'=>'list-players'), null, true);?>" title="<?php echo $translate->_("Terminal Players"); ?>">
+                        <?php echo $translate->_("Terminal Players"); ?>
+                    </a>
+                </li>
+                <li>
+                    <a href="<?php echo $this->url(array('lang'=>$lang, 'controller'=>'terminal-players', 'action'=>'details', 'player_id'=>$this->player_id));?>" title="<?php echo $translate->_("ViewDetails"); ?>">
+                        <?php echo $translate->_("Terminal Player Details"); ?>
+                    </a>
+                </li>
+                <li class="bold-text"><?php echo $this->username; ?></li>
+                <li class="active"><a href="<?php echo $this->url(array('lang'=>$lang, 'controller'=>'terminal-players', 'action'=>'update', 'player_id'=>$this->player_id));?>"><?php echo $title; ?></a></li>
+            </ol>
+        </section>
+
+        <section class="content">
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12 pull-left">
+                    <div class="box box-default">
+                        <div class="box-header">
+                            <h3 class="box-title">
+                                <?php echo $title; ?>
+                            </h3>
+                        </div>
+                        <div class="box-body">
+                            <?php if(!strlen($this->message)==0){ ?>
+                                <div class="alert alert-danger alert-dismissible">
+                                    <h4>
+                                        <i class="icon fa fa-ban"></i><?php echo $translate->_("Alert"); ?>
+                                    </h4>
+                                    <?php echo $this->message; ?>
+                                </div>
+                            <?php
+                            }
+                            ?>
+
+                            <?php if(!strlen($this->information)==0){ ?>
+                                <div class="alert alert-success alert-dismissible">
+                                    <h4>
+                                        <i class="icon fa fa-check"></i><?php echo $translate->_("Success"); ?>
+                                    </h4>
+                                    <?php echo $this->information; ?>
+                                </div>
+                            <?php
+                            }
+                            ?>
+                            <?php
+                                echo $this->form;
+                            ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <!-- row -->
+        </section>
+
+    </div>

@@ -1,0 +1,33 @@
+<?php
+$translate = Zend_Registry::get("translate");
+$labelClass ="";
+if($this->element->isRequired())$labelClass .="required";
+$name = $this->element->getName();
+$attrs = $this->element->getAttribs();
+$options = $attrs['options'];
+?> 
+<div class="form-group <?php echo $labelClass; ?>">
+    <?php if (strlen($this->element->getLabel()) > 0) { ?>
+        <label class="control-label" for="<?php echo $this->element->getName(); ?>">
+        <?php echo $this->element->getLabel(); ?>
+        </label>
+    <?php }?>
+
+    <input type="checkbox" class="icheckbox_minimal-blue checked"
+          value="<?php echo $options['checkedValue']; ?>"
+          id="<?php echo $this->element->getId(); ?>"
+          name="<?php echo $name; ?>" <?php if($this->element->isChecked())echo "checked=\"checked\""; else echo ""; ?>
+          <?php if($attrs['disabled'] == "disabled" || $attrs['disabled'] == true)echo "disabled=\"disabled\""; else echo ""; ?>
+          <?php if(isset($attrs['tabindex']))echo "tabindex=\"{$attrs['tabindex']}\""; else echo ""; ?> />
+
+    <input type="hidden" value="<?php echo $options['uncheckedValue']; ?>" id="<?php echo $this->element->getId(); ?>hid" name="<?php echo $name; ?>" />
+    <?php if ($this->element->hasErrors()) { ?>
+        <div class="alert alert-warning alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>
+            <h4>
+                <i class="icon fa fa-ban"></i><?php echo $translate->_("Alert"); ?>
+            </h4>
+            <?php echo $this->formErrors($this->element->getMessages()); ?>
+        </div>
+	<?php }?>
+</div>

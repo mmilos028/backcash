@@ -1,0 +1,42 @@
+<?php
+require_once HELPERS_DIR . DS . 'ApplicationConstants.php';
+$translate = Zend_Registry::get("translate");
+$lang = Zend_Registry::get("lang");
+?>
+<script type="text/javascript">
+$(document).ready(function() {
+
+});
+</script>
+<br />
+<form action="<?php echo $this->escape($this->element->getAction()); ?>"
+	method="<?php echo $this->escape($this->element->getMethod()); ?>">
+        <div class="row">
+            <div class="col-xs-12">
+                <?php echo $this->element->NAME; ?>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-10 col-sm-6 col-md-4">
+                <div class="alert alert-warning">
+                    <h4>
+                        <i class="icon fa fa-warning"></i><?php echo $translate->_("Warning"); ?>
+                    </h4>
+                    <?php echo $translate->_("Locked Status for this player will be affected with any changes."); ?>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-4 col-sm-3 col-md-2">
+                <?php echo $this->element->UNLOCK; ?>
+            </div>
+            <div class="col-xs-4 col-sm-3 col-md-2">
+                <?php echo $this->element->CANCEL; ?>
+            </div>
+        </div>
+        <div class="row">
+            <div class="hidden-elements">
+                <?php echo $this->element->CSRF; ?>
+            </div>
+        </div>
+</form>

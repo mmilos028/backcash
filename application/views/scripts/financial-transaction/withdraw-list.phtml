@@ -1,0 +1,185 @@
+<?php
+$translate = Zend_Registry::get('translate');
+$lang = Zend_Registry::get('lang');
+$username = $_SESSION['auth_space']['session']['username'];
+$subject_type = $_SESSION['auth_space']['session']['subject_super_type_name'];
+$rola = $_SESSION['auth_space']['session']['subject_type_name'];
+$config = Zend_Registry::get('config');
+$section_name = $config->getSectionName();
+//role constants
+require_once HELPERS_DIR . DS . 'NumberHelper.php';
+require_once HELPERS_DIR . DS . 'ApplicationConstants.php';
+$title = $translate->_("Withdraw");
+?>
+<script type="text/javascript">
+    function enableCreditTransfer(player_balance){
+        if(player_balance <= 0){
+            $('#dialog-withdraw-not-possible').modal(
+                {
+                    keyboard: false,
+                    backdrop: false
+                }
+            );
+            return false;
+        }else {
+            var flag = false;
+            $.ajax({
+                type: 'POST',
+                async: false, global: false,
+                url: "<?php echo $this->url(array('controller'=>'financial-transaction', 'action'=>'enable-credit-transfer')); ?>",
+                success: function (data) {
+                    if (data == "1") {
+                        flag = true;
+                    } else flag = false;
+                }
+            });
+            return flag;
+        }
+    }
+    function filterPlayers() {
+      // Declare variables
+      var input, filter, table, tr, td, i;
+      input = document.getElementById("searchPlayerText");
+      filter = input.value.toUpperCase();
+      table = document.getElementById("table");
+      tr = table.getElementsByTagName("tr");
+
+      // Loop through all table rows, and hide those who don't match the search query
+      for (i = 0; i < tr.length; i++) {
+        td = tr[i].getElementsByTagName("td")[0];
+        if (td) {
+            console.log(td.innerHTML);
+          if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            tr[i].style.display = "";
+          } else {
+            tr[i].style.display = "none";
+          }
+        }
+      }
+    }
+
+    function closeWithdrawDialogBox(){
+        $("#dialog-session-expire").modal("hide");
+    }
+
+    $(document).ready(function() {
+        //$("#dialog-withdraw-not-possible").modal("hide");
+        /*$('#dialog-withdraw-not-possible').modal(
+            {
+                keyboard: false,
+                backdrop: false
+            }
+        );*/
+    });
+
+
+</script>
+<!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+
+    <section class="content-header">
+        <span>
+            <a href="<?php echo $this->url(array('lang'=>$lang, 'controller'=>'mobile-menu', 'action'=>'index'), null, true);?>" class="btn btn-warning btn-lg pull-right">
+                <?php echo $translate->_("Back"); ?>
+            </a>
+            <br /><br />
+        </span>
+    </section>
+
+    <section class="content-header">
+        <h1>
+            <?php echo $title; ?>
+        </h1>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <!-- Default box -->
+      <div class="box table-responsive box-default">
+        <div class="box-body">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-lg input-group-addon">
+                                <i class="fa fa-search"></i>
+                            </span>
+                            <input type="text" id="searchPlayerText" class="input-lg form-control" style="max-width: 100%;" onkeyup="filterPlayers()" placeholder="<?php echo $translate->_("Filter"); ?>" autofocus />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <table id="table" class="table table-bordered table-hover table-striped">
+                        <thead>
+                        <tr class="bg-blue-active">
+                            <th>&nbsp;<?php echo $translate->_("Player_Name"); ?>&nbsp;</th>
+                            <th>&nbsp;<?php echo $translate->_("Player_CreditStatus"); ?>&nbsp;</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <?php foreach($this->paginator as $data): ?>
+                        <tr class="cashier-tr">
+                            <td class="cashier-td-column">
+                                <?php if($data['rola'] == ROLA_PL_TERMINAL_PLAYER) {?>
+                                    <a class="btn btn-danger btn-block left-text-align noblockui" title="<?php echo $translate->_("TerminalPlayerPayout"); ?>" onclick="return enableCreditTransfer(<?php echo NumberHelper::convert_double($data['player_credits']); ?>);" href="<?php echo $this->url(array('lang'=>$lang, 'controller'=>'financial-transaction', 'action'=>'terminal-payout-to-cashier', 'player_id'=>$data['player_id']));?>">
+                                        <?php echo $this->escape($data['player_name']); ?>
+                                    </a>
+                                <?php } ?>
+                                <?php if($data['rola'] == ROLA_PL_PC_PLAYER_INTERNET) { ?>
+                                    <a class="btn btn-warning btn-block left-text-align noblockui" title="<?php echo $translate->_("PlayerPayout"); ?>" onclick="return enableCreditTransfer(<?php echo NumberHelper::convert_double($data['player_credits']); ?>);" href="<?php echo $this->url(array('lang'=>$lang, 'controller'=>'financial-transaction', 'action'=>'player-payout-to-cashier', 'player_id'=>$data['player_id']));?>">
+                                        <?php echo $this->escape($data['player_name']); ?>
+                                    </a>
+                                <?php } ?>
+                            </td>
+                            <td class="cashier-td-column">
+                                <?php if($data['rola'] == ROLA_PL_TERMINAL_PLAYER) {?>
+                                    <a class="btn btn-default btn-block noblockui right-text-align" title="<?php echo $translate->_("TerminalPlayerPayout"); ?>" onclick="return enableCreditTransfer(<?php echo NumberHelper::convert_double($data['player_credits']); ?>);" href="<?php echo $this->url(array('lang'=>$lang, 'controller'=>'financial-transaction', 'action'=>'terminal-payout-to-cashier', 'player_id'=>$data['player_id']));?>">
+                                        <?php echo NumberHelper::format_double($this->escape($data['player_credits'])); ?>
+                                        <?php echo $this->escape($data['currency']); ?>
+                                    </a>
+                                <?php } ?>
+                                <?php if($data['rola'] == ROLA_PL_PC_PLAYER_INTERNET) { ?>
+                                    <a class="btn btn-default btn-block noblockui right-text-align" title="<?php echo $translate->_("PlayerPayout"); ?>" onclick="return enableCreditTransfer(<?php echo NumberHelper::convert_double($data['player_credits']); ?>);" href="<?php echo $this->url(array('lang'=>$lang, 'controller'=>'financial-transaction', 'action'=>'player-payout-to-cashier', 'player_id'=>$data['player_id']));?>">
+                                        <?php echo NumberHelper::format_double($this->escape($data['player_credits'])); ?>
+                                        <?php echo $this->escape($data['currency']); ?>
+                                    </a>
+                                <?php } ?>
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+        <!-- /.box-body -->
+      </div>
+      <!-- /.box -->
+
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+
+<div class="modal fade" tabindex="-1" role="dialog" id="dialog-withdraw-not-possible">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title"><?php echo $translate->_("Withdraw not possible"); ?></h4>
+      </div>
+      <div class="modal-body">
+        <p>
+            <span class="ui-icon ui-icon-alert" style="float:left; text-align: left !important; margin:12px 12px 20px 0;"></span>
+            <?php echo $translate->_("Balance iz zero, can not withdraw"); ?>
+            <span style="font-weight: bold; color: red;" id="dialog-session-expire-time-remaining"> </span>
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="closeWithdrawDialogBox()"><?php echo $translate->_("Close"); ?></button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

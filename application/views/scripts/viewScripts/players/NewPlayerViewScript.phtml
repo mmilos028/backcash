@@ -1,0 +1,166 @@
+<?php $translate = Zend_Registry::get("translate"); ?>
+<script type="text/javascript">
+$(document).ready(function() {
+	var now = new Date();
+    $.fn.datepicker.defaults.format = "dd-M-yyyy";
+    $.fn.datepicker.defaults.allowDeselection = false;
+
+    var previousDate;
+    var date18YearsInPast = new Date(
+        new Date().getFullYear() - 18,
+        new Date().getMonth(),
+        new Date().getDate()
+    );
+
+	$("#BIRTHDATE").datepicker({
+        dateFormat: 'dd-M-yyyy',
+        changeYear: true,
+        changeMonth: true,
+        showWeek: true,
+        enableOnReadonly: true,
+        keyboardNavigation: true,
+        showOnFocus: true,
+        todayHighlight: true,
+        forceParse: true,
+        autoclose: true,
+        defaultViewDate: date18YearsInPast
+    });
+     // Save date picked
+    $("#BIRTHDATE").on('show', function () {
+        previousDate = $(this).val();
+    });
+    // Replace with previous date if no date is picked or if same date is picked to avoide toggle error
+    $("#BIRTHDATE").on('hide', function () {
+        if ($(this).val() === '' || $(this).val() === null) {
+            $(this).val(previousDate).datepicker('update');
+        }
+    });
+
+    $('#BIRTHDATE').datepicker('setDate', date18YearsInPast);
+
+	if(!$("#CURRENCY").is('select')){
+		var cur_val = $("#CURRENCY_HIDDEN").val();
+		$("#element-val").text(cur_val);	
+	}
+	$("#CURRENCY").change(function(){
+		$("#PLAYER_CURRENCY_HID").val($("#CURRENCY").val());
+	});
+	$("#BIRTHDATE").attr("readonly","readonly");
+	$("#NAME").focus();
+	$("#PHONE").mask("99999?9999999999");
+	$("#BIRTHDATE").mask("99-aaa-9999");
+    $("#NAME").bind('keypress', function (event) {
+
+        var code = (event.keyCode ? event.keyCode : event.which);
+        if (this.selectionStart === 0) {
+            if (code > 48 && code < 57) {
+                event.preventDefault();
+            }
+        }
+    });
+
+    $(".birthdate").on('click',function(){
+          $('#BIRTHDATE').focus();
+    });
+});
+</script>
+
+<form role="form" class="form-horizontal row-border" action="<?php echo $this->escape($this->element->getAction()); ?>"
+	method="<?php echo $this->escape($this->element->getMethod()); ?>">
+   <div class="container pull-left">
+
+       <?php if(isset($this->element->PLAYER_LOCATION)){?>
+        <div class="row">
+            <div class="col-md-5 col-xs-12">
+                <?php echo $this->element->PLAYER_LOCATION; ?>
+            </div>
+        </div>
+       <?php } ?>
+
+        <div class="row">
+            <div class="col-md-5 col-xs-12">
+                <?php echo $this->element->NAME; ?>
+            </div>
+            <div class="col-md-offset-1 col-md-5 col-xs-12">
+                <?php echo $this->element->PASSWORD; ?>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-5 col-xs-12">
+                <?php echo $this->element->CONFIRM_PASSWORD; ?>
+            </div>
+            <div class="col-md-offset-1 col-md-5 col-xs-12">
+                <?php echo $this->element->EMAIL; ?>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-5 col-xs-12">
+                <?php echo $this->element->FIRST_NAME; ?>
+
+            </div>
+            <div class="col-md-offset-1 col-md-5 col-xs-12">
+                <?php echo $this->element->LAST_NAME; ?>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-5 col-xs-12">
+                <div class="input-group date birthdate">
+                    <?php echo $this->element->BIRTHDATE; ?>
+                </div>
+            </div>
+            <div class="col-md-offset-1 col-md-5 col-xs-12">
+                <?php echo $this->element->PHONE; ?>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-5 col-xs-12">
+                <?php echo $this->element->ADDRESS; ?>
+            </div>
+            <div class="col-md-offset-1 col-md-5 col-xs-12">
+                <?php echo $this->element->ZIP; ?>
+            </div>
+        </div>
+
+       <div class="row">
+            <div class="col-md-5 col-xs-12">
+                <?php echo $this->element->CITY; ?>
+            </div>
+            <div class="col-md-offset-1 col-md-5 col-xs-12">
+                <?php echo $this->element->COUNTRY; ?>
+            </div>
+       </div>
+
+       <div class="row">
+            <div class="col-md-5 col-xs-12">
+
+            </div>
+            <div class="col-md-offset-1 col-md-5 col-xs-12">
+                <?php echo $this->element->CURRENCY; ?>
+            </div>
+       </div>
+
+       <div class="row">
+           <div class="col-xs-6 col-sm-4 col-md-3">
+               <?php echo $this->element->SAVE; ?>
+           </div>
+           <div class="col-xs-6 col-sm-4 col-md-3">
+               <?php echo $this->element->CANCEL; ?>
+           </div>
+       </div>
+
+       <div class="row invincible">
+            <div class="hidden-elements">
+                <?php echo $this->element->CURRENCY_HIDDEN; ?>
+                <?php echo $this->element->CSRF; ?>
+                <?php echo $this->element->PLAYER_TYPE; ?>
+				<?php echo $this->element->CURRENCY_HIDDEN; ?>
+            </div>
+       </div>
+
+   </div>
+
+</form>

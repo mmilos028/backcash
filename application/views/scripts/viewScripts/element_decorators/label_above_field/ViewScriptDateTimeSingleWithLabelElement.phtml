@@ -1,0 +1,27 @@
+<?php
+$translate = Zend_Registry::get("translate");
+$labelClass ="";
+if($this->element->isRequired())$labelClass .="required";
+?>
+<div class="form-group <?php echo $labelClass; ?>">
+    <?php if (strlen($this->element->getLabel()) > 0) { ?>
+        <label class="control-label label-break-line" for="<?php echo $this->element->getName(); ?>"><?php echo $this->element->getLabel(); ?></label>
+    <?php }?>
+    <div class="input-group date">
+        <?php echo $this->{$this->element->helper}
+            ($this->element->getName(), $this->element->getValue(), $this->element->getAttribs());
+        ?>
+        <div class="input-group-addon"><span class="glyphicon glyphicon-th"></span>
+    </div>
+
+    </div>
+    <?php if ($this->element->hasErrors()) { ?>
+        <div class="alert alert-warning alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>
+            <h4>
+                <i class="icon fa fa-ban"></i><?php echo $translate->_("Alert"); ?>
+            </h4>
+            <?php echo $this->formErrors($this->element->getMessages()); ?>
+        </div>
+    <?php }?>
+</div>

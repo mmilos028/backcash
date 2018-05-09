@@ -1,0 +1,56 @@
+@charset UTF-8;
+body{
+    background-color: #d2d6de;
+	min-width: 800px;
+}
+#header_content, .header_content{
+    font-size:11px;
+    color:#FFF;
+    background-color:#A349A4;
+    height:58px;
+    vertical-align:middle;
+    padding-top:20px;
+    background-repeat:no-repeat;
+    background-size:100%;
+    -moz-background-size:100% 100%;
+    -o-background-size:100% 100%;
+    -webkit-background-size:100% 100%;
+    z-index:1;
+    background-image:url(../images/backoffice_header.jpg);
+    margin:0;
+	min-width: 800px;
+}
+#langswitch{
+    font-size:11px;
+    color:#FFF;
+    margin-top:-10px;
+    margin-left:370px;
+}
+
+.langswitch_active_language{
+    /*border: 2px solid #EBE3BE;*/
+}
+
+.langswitch_inactive_language{
+    -webkit-filter: grayscale(100%);
+    -moz-filter: grayscale(100%);
+    -o-filter: grayscale(100%);
+    -ms-filter: grayscale(100%);
+    filter: grayscale(100%);
+}
+
+#content_content, .content_content{
+    background-color:#FFF;
+    vertical-align:top;
+    min-height:300px;
+    margin:4px 0 0;
+	min-width: 800px;
+}
+#footer_content, .footer_content{
+    color:#FFF;
+    background:#A349A4;
+    height:2em;
+    text-align:center;
+    margin:4px 0 0;
+	min-width: 800px;
+}

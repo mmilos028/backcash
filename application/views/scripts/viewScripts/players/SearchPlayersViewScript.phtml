@@ -1,0 +1,82 @@
+<?php
+$translate = Zend_Registry::get("translate");
+?>
+<script type="text/javascript">
+$(document).ready(function(){
+	$('#form_search_players').submit(function(){
+		$('input[type=submit]', this).addClass('disabled');
+	});
+
+    $("#form_search_players").find("select").change(function() {
+        $('#form_search_players').submit();
+    });
+});
+</script>
+
+<form id="form_search_players" action="<?php echo $this->escape($this->element->getAction()); ?>"
+	method="<?php echo $this->escape($this->element->getMethod()); ?>">
+    <div class="container">
+        <div class="row" style="max-width: 1000px;">
+            <div class="col-md-3">
+                <?php echo $this->element->USERNAME; ?>
+            </div>
+            <div class="col-md-3">
+                <?php echo $this->element->CITY; ?>
+            </div>
+            <div class="col-md-3">
+                <?php echo $this->element->PARENT_AFFILIATE; ?>
+            </div>
+            <div class="col-md-3">
+            </div>
+        </div>
+        <div class="row" style="max-width: 1000px;">
+            <div class="col-md-3">
+                <?php echo $this->element->FIRST_NAME; ?>
+            </div>
+            <div class="col-md-3">
+                <?php echo $this->element->COUNTRY; ?>
+            </div>
+            <div class="col-md-3">
+                <?php echo $this->element->CURRENCY; ?>
+            </div>
+            <div class="col-md-3">
+            </div>
+        </div>
+        <div class="row" style="max-width: 1000px;">
+            <div class="col-md-3">
+                <?php echo $this->element->LAST_NAME; ?>
+            </div>
+            <div class="col-md-3">
+            </div>
+            <div class="col-md-3">
+                <?php echo $this->element->BANNED; ?>
+            </div>
+            <div class="col-md-3">
+            </div>
+        </div>
+        <div class="row" style="max-width: 1000px;">
+            <div class="col-md-3">
+                <?php echo $this->element->PAGE; ?>
+            </div>
+            <div class="col-md-3">
+                <?php echo $this->element->LIMIT; ?>
+            </div>
+            <div class="col-md-3">
+            </div>
+            <div class="col-md-3">
+            </div>
+        </div>
+        <div class="row" style="max-width: 1000px;">
+            <div class="col-md-3">
+            </div>
+            <div class="col-md-3">
+            </div>
+            <div class="col-md-3">
+                <?php echo $this->element->SUBMIT; ?>
+                <?php echo $this->element->PREVIOUS_PAGE; ?>
+            </div>
+            <div class="col-md-3">
+            </div>
+        </div>
+    </div>
+</form>

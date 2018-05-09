@@ -1,0 +1,138 @@
+<?php 
+$translate = Zend_Registry::get("translate"); 
+$months_in_past = $_SESSION['report_operation']['months_in_past'];
+?>
+<script type="text/javascript">
+$(document).ready(function() {
+    var now = new Date();
+    $.fn.datepicker.defaults.format = "dd-M-yyyy";
+    $.fn.datepicker.defaults.allowDeselection = false;
+
+	var currentTime = new Date();
+	var startDateFrom = new Date(currentTime.getFullYear(), currentTime.getMonth() - <?php echo $months_in_past; ?>, 1);
+	var startDateTo = new Date(currentTime.getFullYear(), currentTime.getMonth() +1, 0);
+
+    var startdateDate;
+	$("#REPORT_STARTDATE").datepicker({
+        dateFormat: 'dd-M-yyyy',
+        changeYear: true,
+        changeMonth: true,
+        showWeek: true,
+        enableOnReadonly: true,
+        keyboardNavigation: true,
+        showOnFocus: true,
+        todayHighlight: true,
+        forceParse: true,
+        autoclose: true,
+		startDate: startDateFrom, endDate: startDateTo, numberOfMonths: 1
+	});
+
+    var enddateDate;
+	$("#REPORT_ENDDATE").datepicker({
+		dateFormat: 'dd-M-yyyy',
+        changeYear: true,
+        changeMonth: true,
+        showWeek: true,
+        enableOnReadonly: true,
+        keyboardNavigation: true,
+        showOnFocus: true,
+        todayHighlight: true,
+        forceParse: true,
+        autoclose: true,
+		startDate: startDateFrom, numberOfMonths: 1
+	});
+	$("#REPORT_ENDDATE").change(function() {
+        var date1 = $("#REPORT_STARTDATE").datepicker("getDate");
+        var date2 = $("#REPORT_ENDDATE").datepicker("getDate");
+        if(date2 < date1)
+            $("#REPORT_ENDDATE").val($("#REPORT_STARTDATE").val());
+        });
+    $("#REPORT_STARTDATE").change(function(){ 
+    	var date1 = $("#REPORT_STARTDATE").datepicker("getDate");
+        var date2 = $("#REPORT_ENDDATE").datepicker("getDate");
+        if(date2 < date1)
+            $("#REPORT_STARTDATE").val($("#REPORT_ENDDATE").val());
+    });
+
+
+    // Save date picked
+    $("#REPORT_STARTDATE").on('show', function () {
+        startdateDate = $(this).val();
+    });
+    // Replace with previous date if no date is picked or if same date is picked to avoide toggle error
+    $("#REPORT_STARTDATE").on('hide', function () {
+        if ($(this).val() === '' || $(this).val() === null) {
+            $(this).val(startdateDate).datepicker('update');
+        }
+    });
+
+    // Save date picked
+    $("#REPORT_ENDDATE").on('show', function () {
+        enddateDate = $(this).val();
+    });
+    // Replace with previous date if no date is picked or if same date is picked to avoide toggle error
+    $("#REPORT_ENDDATE").on('hide', function () {
+        if ($(this).val() === '' || $(this).val() === null) {
+            $(this).val(enddateDate).datepicker('update');
+        }
+    });
+
+    $('#form_list_credit_transfers').submit(function(){
+    	$('input[type=submit]', this).addClass('disabled');
+    });
+
+    $("#form_list_credit_transfers").find("select").change(function() {
+        $('#form_list_credit_transfers').submit();
+    });
+
+    $(".startdate").on('click',function(){
+          $('#REPORT_STARTDATE').focus();
+    });
+    $(".enddate").on('click',function(){
+          $('#REPORT_ENDDATE').focus();
+    });
+});
+</script>
+<form id="form_list_credit_transfers" class="form-inline" action="<?php echo $this->escape($this->element->getAction()); ?>"
+	method="<?php echo $this->escape($this->element->getMethod()); ?>">
+
+        <div class="row">
+            <div class="col-xs-6" style="max-width: 230px;">
+                <?php if(isset($this->element->REPORT_STARTDATE)){ ?>
+                <div class="input-group date startdate">
+                    <?php echo $this->element->REPORT_STARTDATE; ?>
+                </div>
+                <?php } ?>
+            </div>
+            <div class="col-xs-6" style="max-width: 230px;">
+                <?php if(isset($this->element->REPORT_ENDDATE)){ ?>
+                <div class="input-group date enddate">
+                    <?php echo $this->element->REPORT_ENDDATE; ?>
+                </div>
+                <?php } ?>
+            </div>
+        </div>
+
+        <?php if(isset($this->element->FILTER_BY_PLAYER)){ ?>
+        <div class="row" style="max-width: 400px;">
+        <?php echo $this->element->FILTER_BY_PLAYER; ?>
+        </div>
+        <?php } ?>
+
+        <?php if(isset($this->element->TRANSACTION_TYPE)){ ?>
+        <div class="row" style="max-width: 400px;">
+        <?php echo $this->element->TRANSACTION_TYPE; ?>
+        </div>
+        <?php } ?>
+
+        <div class="row" style="max-width: 400px;">
+        <?php if(isset($this->element->PAGE))echo $this->element->PAGE; ?>
+        <?php echo $this->element->LIMIT; ?>
+        </div>
+
+        <div class="row" style="max-width: 400px;">
+            <?php echo $this->element->GENERATE_REPORT; ?>
+            <?php echo $this->element->MIN_REPORT; ?>
+            <?php echo $this->element->PREVIOUS_PAGE; ?>
+        </div>
+</form>

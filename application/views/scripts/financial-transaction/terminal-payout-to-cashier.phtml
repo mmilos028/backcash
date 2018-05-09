@@ -1,0 +1,89 @@
+<?php
+$translate = Zend_Registry::get("translate");
+$lang = Zend_Registry::get("lang");
+$head_title = $translate->_("TerminalPlayerPayout");
+$this->title = $head_title;
+$this->headTitle($head_title);
+?>
+<!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+
+      <section class="content-header">
+
+        <span>
+            <a href="<?php echo $this->url(array('lang'=>$lang, 'controller'=>'financial-transaction', 'action'=>'withdraw-list'), null, true);?>" class="btn btn-warning btn-lg pull-right">
+                <?php echo $translate->_("Back"); ?>
+            </a>
+            <br /><br />
+        </span>
+
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 pull-left">
+                <div class="box box-default no-margin">
+                    <div class="box-body">
+                        <?php if(!strlen($this->message)==0){ ?>
+                            <div class="alert alert-danger alert-dismissible">
+                                <h4>
+                                    <i class="icon fa fa-ban"></i><?php echo $translate->_("Alert"); ?>
+                                </h4>
+                                <?php echo $this->message; ?>
+                            </div>
+                        <?php
+                        }
+                        ?>
+                        <?php
+                            echo $this->form;
+                        ?>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-12" style="max-width: 600px;">
+                <div class="box box-default no-margin">
+                    <div class="box-body">
+                        <!--<div class="container pull-center">-->
+                            <div class="row no-margin">
+                                <div class="col-xs-6 no-margin">
+                                    <a onclick="addTransferAmount(5)" class="btn btn-danger btn-block noblockui vertical-align-lg-button large-text" href="javascript:void(0)">+5</a>
+                                </div>
+                                <div class="col-xs-6 no-margin">
+                                    <a onclick="addTransferAmount(10)" class="btn btn-danger btn-block noblockui vertical-align-lg-button large-text" href="javascript:void(0)">+10</a>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    &nbsp;
+                                </div>
+                            </div>
+                            <div class="row no-margin">
+                                <div class="col-xs-6 no-margin">
+                                    <a onclick="addTransferAmount(50)" class="btn btn-danger btn-block noblockui vertical-align-lg-button large-text" href="javascript:void(0)">+50</a>
+                                </div>
+                                <div class="col-xs-6 no-margin">
+                                    <a onclick="addTransferAmount(100)" class="btn btn-danger btn-block noblockui vertical-align-lg-button large-text" href="javascript:void(0)">+100</a>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    &nbsp;
+                                </div>
+                            </div>
+                            <div class="row no-margin">
+                                <div class="col-xs-6 no-margin">
+                                    <a onclick="addTransferAmount(500)" class="btn btn-danger btn-block noblockui vertical-align-lg-button large-text" href="javascript:void(0)">+500</a>
+                                </div>
+                                <div class="col-xs-6 no-margin">
+                                    <a onclick="addTransferAmount(1000)" class="btn btn-danger btn-block noblockui vertical-align-lg-button large-text" href="javascript:void(0)">+1.000</a>
+                                </div>
+                            </div>
+                        <!--</div>-->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- row -->
+    </section>
+</div>
